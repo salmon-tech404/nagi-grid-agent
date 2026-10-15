@@ -40,6 +40,9 @@ from nagi.executor import Executor  # noqa: E402
 from nagi.jobs import HireBook, JobDesk  # noqa: E402
 from nagi.market import fetch_klines  # noqa: E402
 from nagi.perf import grid_pnl  # noqa: E402
+from nagi.history import LOGS_RPC, ChainHistory  # noqa: E402
+from bnbagent.config import resolve_network  # noqa: E402
+import dataclasses  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 logger = logging.getLogger("nagi")
@@ -86,7 +89,13 @@ negotiation_handler = NegotiationHandler(
 executor = Executor(wallet)
 engine = GridEngine(executor)
 chain_lock = asyncio.Lock()  # one onchain writer at a time, so nonces never collide
-hirebook = HireBook(client.commerce, wallet.address)  # read-only, safe to run anywhere
+POKTER_URL = os.getenv("POKTER_URL", f"https://pokter.xyz/agents/97/{AGENT_ID}")
+DEADLINE = 1793880000  # Set and Earn closes 2026-11-05 12:00 UTC
+LOW_GAS_BNB = 0.06
+# Read-only client on a node that serves eth_getLogs (the default testnet RPC refuses them).
+reader = ERC8183Client(None, dataclasses.replace(resolve_network(NETWORK), rpc_url=LOGS_RPC))
+hirebook = HireBook(client.commerce, wallet.address, reader=reader)  # read-only, safe to run anywhere
+history = ChainHistory(wallet.address, client.commerce.address, client.payment_token)
 desk: JobDesk | None = None
 STARTED_AT = int(time.time())
 _wallet_cache: dict[str, Any] = {"ts": 0, "bnb": None, "busd": None}
@@ -178,10 +187,11 @@ async def _desk_loop(desk: JobDesk) -> None:
 
 async def _hires_loop() -> None:
     while True:
-        try:
-            await asyncio.to_thread(hirebook.refresh)
-        except Exception as exc:
-            logger.error("hire book refresh failed: %s", exc)
+        for name, fn in (("hire book", hirebook.refresh), ("chain history", history.refresh)):
+            try:
+                await asyncio.to_thread(fn)
+            except Exception as exc:
+                logger.error("%s refresh failed: %s", name, exc)
         await asyncio.sleep(60)
 
 
@@ -253,6 +263,61 @@ async def hires():
             if session:
                 j["session_end"] = session["end"]
     return {"agent_id": AGENT_ID, "scanned_jobs": hirebook.scanned, **s}
+
+
+async def _wallet() -> dict[str, Any]:
+    if time.time() - _wallet_cache["ts"] > 60:
+        try:
+            bal = await asyncio.to_thread(executor.balances)
+            u = await asyncio.to_thread(client.token_balance)
+            _wallet_cache.update(ts=time.time(), bnb=bal["bnb"] / 1e18, busd=bal["busd"] / 1e18, u=u / 1e18)
+        except Exception as exc:
+            logger.warning("wallet balance read failed: %s", exc)
+    return {"tbnb": _wallet_cache.get("bnb"), "busd": _wallet_cache.get("busd"), "u": _wallet_cache.get("u")}
+
+
+@app.get("/overview")
+async def overview():
+    """Everything the dashboard shows, in one call. Trades, earnings and hires come from chain."""
+    w = await _wallet()
+    r = engine.last_regime
+    trades = history.trade_list()
+    price_now = r.price if r else next((t["price_ref"] for t in reversed(trades) if t.get("price_ref")), None)
+    hires = hirebook.summary()
+    if desk is not None:
+        for j in hires["jobs"]:
+            session = desk.sessions.get(j["job_id"])
+            if session:
+                j["session_end"] = session["end"]
+    delivered = [j for j in hires["jobs"] if j["submitted_at"]]
+    action_days = set(history.active_days()) | {
+        time.strftime("%Y-%m-%d", time.gmtime(j["submitted_at"])) for j in delivered}
+    decisions = [e for e in reversed(engine.log) if e["kind"] != "trade"][:20]
+    return {
+        "agent": {"name": AGENT_NAME, "id": AGENT_ID, "owner": wallet.address, "category": CATEGORY,
+                  "listing": POKTER_URL, "card": f"{BASE_URL}/.well-known/agent-card.json"},
+        "status": {
+            "automation": RUN_LOOPS, "last_check": engine.last_tick, "interval": GRID_INTERVAL,
+            "market": r.state if r else None, "er": round(r.er, 4) if r else None, "atr": r.atr if r else None,
+            "price": price_now, "gas_low": w["tbnb"] is not None and w["tbnb"] < LOW_GAS_BNB,
+            "history_block": history.next_block - 1, "started_at": STARTED_AT,
+        },
+        "wallet": w,
+        "grid": None if engine.plan is None else {"center": engine.plan.center, "step": engine.plan.step,
+                                                  "levels": [round(lv, 2) for lv in engine.plan.levels]},
+        "hires": hires,
+        "earnings": {"earned_u": history.earned_u(), "pending_u": hires["pending_u"],
+                     "payouts": sorted(history.earnings.values(), key=lambda e: e["ts"], reverse=True)},
+        "progress": {
+            "hires": {"value": hires["completed_clients"], "target": 3},
+            "actions": {"value": len(trades) + len(delivered), "target": 5},
+            "days": {"value": len(action_days), "target": 3},
+            "deadline": DEADLINE,
+        },
+        "performance": grid_pnl(trades, price_now),
+        "trades": list(reversed(trades)),
+        "decisions": decisions,
+    }
 
 
 @app.get("/performance")

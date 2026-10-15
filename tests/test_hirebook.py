@@ -49,6 +49,26 @@ def test_first_refresh_keeps_only_nagi_jobs():
     assert s["jobs"][0]["budget_u"] == 0.1
 
 
+def test_summary_counts_distinct_outside_clients_and_pending_budget():
+    c = FakeCommerce([
+        Job(1, NAGI, Status.COMPLETED, client="0xAAA"), Job(2, NAGI, Status.COMPLETED, client="0xaaa"),
+        Job(3, NAGI, Status.FUNDED, client="0xBBB"), Job(4, NAGI, Status.COMPLETED, client=NAGI),
+    ])
+    book = HireBook(c, NAGI)
+    book.refresh()
+    s = book.summary()
+    assert (s["clients"], s["completed_clients"]) == (2, 1)  # own wallet never counts; case-insensitive
+    assert s["pending_u"] == 0.1
+
+
+def test_task_text_comes_from_the_anchored_brief():
+    import json
+    c = FakeCommerce([Job(1, NAGI, Status.FUNDED, description=json.dumps({"task": "Run one grid session"}))])
+    book = HireBook(c, NAGI)
+    book.refresh()
+    assert book.jobs[1]["task"] == "Run one grid session" and book.jobs[1]["read_only"] is False
+
+
 def test_later_refresh_reads_new_ids_and_open_jobs_only():
     c = FakeCommerce([Job(1, NAGI, Status.FUNDED), Job(2, NAGI, Status.COMPLETED)])
     book = HireBook(c, NAGI)

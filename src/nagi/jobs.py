@@ -48,12 +48,14 @@ class HireBook:
     jobs that are still open. Synchronous: run it in a thread.
     """
 
-    def __init__(self, commerce, provider: str, chunk: int = 200):
+    def __init__(self, commerce, provider: str, chunk: int = 200, reader=None):
         self.commerce = commerce
         self.me = provider.lower()
         self.chunk = chunk
+        self.reader = reader  # optional read-only ERC8183Client on a log-serving RPC, for report links
         self.scanned = 0
         self.jobs: dict[int, dict[str, Any]] = {}
+        self._reports: dict[int, str | None] = {}
 
     def refresh(self) -> None:
         counter = self.commerce.job_counter()
@@ -65,23 +67,50 @@ class HireBook:
                     if job is not None and job.provider.lower() == self.me:
                         self.jobs[job.id] = self._view(job)
         self.scanned = counter
+        for job_id, j in self.jobs.items():
+            if j["submitted_at"] and self._reports.get(job_id) is None and self.reader is not None:
+                try:
+                    self._reports[job_id] = self.reader.get_deliverable_url(job_id)
+                except Exception as exc:
+                    logger.warning("report link for job %s not found yet: %s", job_id, exc)
+            j["report_url"] = _gateway(self._reports.get(job_id))
 
     @staticmethod
     def _view(job) -> dict[str, Any]:
         return {
             "job_id": job.id, "client": job.client, "budget_u": job.budget / 1e18,
             "status": job.status.name, "expired_at": job.expired_at, "submitted_at": job.submitted_at,
-            "brief": (job.description or "")[:300],
+            "task": brief_task(job.description or ""), "read_only": terms_forbid_trading(job.description or ""),
         }
 
     def summary(self) -> dict[str, Any]:
         jobs = sorted(self.jobs.values(), key=lambda j: j["job_id"], reverse=True)
+        outside = {j["client"].lower() for j in jobs if j["client"].lower() != self.me}
+        completed_outside = {j["client"].lower() for j in jobs if j["status"] == "COMPLETED" and j["client"].lower() != self.me}
         return {
             "total": len(jobs),
             "running": sum(j["status"] in ("FUNDED", "SUBMITTED") for j in jobs),
             "completed": sum(j["status"] == "COMPLETED" for j in jobs),
+            "clients": len(outside),
+            "completed_clients": len(completed_outside),
+            "pending_u": round(sum(j["budget_u"] for j in jobs if j["status"] in ("FUNDED", "SUBMITTED")), 6),
             "jobs": jobs,
         }
+
+
+def brief_task(description: str) -> str:
+    """The human request inside a job's anchored description (JSON from the SDK, or plain text)."""
+    try:
+        doc = json.loads(description)
+        return str(doc.get("task") or doc.get("task_description") or "")[:240]
+    except (ValueError, AttributeError):
+        return description[:240]
+
+
+def _gateway(url: str | None) -> str | None:
+    if url and url.startswith("ipfs://"):
+        return "https://gateway.pinata.cloud/ipfs/" + url.removeprefix("ipfs://")
+    return url
 
 
 class JobDesk:

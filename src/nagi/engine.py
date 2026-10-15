@@ -34,10 +34,13 @@ class GridEngine:
         self.plan: grid.GridPlan | None = None
         self.last_price: float | None = None
         self.state: str | None = None
+        self.last_tick: int | None = None
+        self.last_regime: regime.Regime | None = None
         self.log: deque[dict[str, Any]] = deque(maxlen=history)
 
     def tick(self, df: pd.DataFrame) -> list[dict[str, Any]]:
         r = regime.classify(df)
+        self.last_tick, self.last_regime = int(time.time()), r
         if not r.grid_allowed:
             events = [] if self.state == "storm" else [self._record("pause", r)]
             self.state, self.plan, self.last_price = "storm", None, r.price
