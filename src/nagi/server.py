@@ -111,6 +111,12 @@ AGENT_CARD: dict[str, Any] = {
                 "trade's tx hash and decision receipt."
             ),
             "tags": ["grid-trading", "grid", "erc8183", "bnb-chain"],
+            "examples": [
+                "Run one grid session on BNB testnet (WBNB/BUSD) and report every trade with its tx hash "
+                "and decision receipt. Trade only from Nagi's own wallet.",
+                "Read-only: give me the current BNB regime and the grid levels you would trade, "
+                "with no transactions.",
+            ],
             "inputModes": ["application/json"],
             "outputModes": ["application/json"],
         },

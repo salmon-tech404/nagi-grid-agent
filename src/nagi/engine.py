@@ -54,8 +54,8 @@ class GridEngine:
         self.last_price = r.price
         return events
 
-    def open_session(self, df: pd.DataFrame, job_id: int) -> list[dict[str, Any]]:
-        """Re-centre the grid for a hire; take an entry trade only if the market is calm."""
+    def open_session(self, df: pd.DataFrame, job_id: int, read_only: bool = False) -> list[dict[str, Any]]:
+        """Re-centre the grid for a hire; take an entry trade only if calm and the terms allow trading."""
         r = regime.classify(df)
         if not r.grid_allowed:
             self.state, self.plan, self.last_price = "storm", None, r.price
@@ -63,7 +63,11 @@ class GridEngine:
                                  note="hired during a trend: Nagi stands still until the market calms")]
         self.state = "calm"
         events = [self._open(r, job_id=job_id)]
-        events.append(self._trade("sell", r, level=r.price, job_id=job_id, note="session entry"))
+        if read_only:
+            events.append(self._record("session-read-only", r, job_id=job_id,
+                                       note="the job's terms forbid transactions: report only, no entry trade"))
+        else:
+            events.append(self._trade("sell", r, level=r.price, job_id=job_id, note="session entry"))
         return events
 
     def _open(self, r: regime.Regime, **extra) -> dict[str, Any]:

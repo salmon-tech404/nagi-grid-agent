@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 import time
 from typing import Any
 
@@ -21,6 +22,20 @@ from nagi.market import fetch_klines
 logger = logging.getLogger("nagi.jobs")
 
 SUBMIT_MARGIN = 300  # submit at least 5 minutes before the policy's submit deadline
+
+# Pokter's default brief says "Read-only analysis only. Execute no transaction and move no funds."
+READ_ONLY = re.compile(r"read[- ]only|no transactions?|do not execute|don't execute|move no funds|without (wallet )?execution",
+                       re.IGNORECASE)
+
+
+def terms_forbid_trading(description: str) -> bool:
+    """True when the job's anchored brief (task + terms) asks for no transactions."""
+    try:
+        doc = json.loads(description)
+        text = " ".join([str(doc.get("task", "")), *map(str, (doc.get("terms") or {}).values())])
+    except (ValueError, AttributeError):
+        text = description or ""
+    return bool(READ_ONLY.search(text))
 
 
 FINAL = ("COMPLETED", "REJECTED", "EXPIRED")
@@ -96,11 +111,12 @@ class JobDesk:
         if end <= now + 60:
             logger.warning("job %s: not enough time left to run a session", job_id)
             return None
+        read_only = terms_forbid_trading(job.get("description", ""))
         df = await fetch_klines(self.market_symbol)
         async with self.lock:
-            opened = await asyncio.to_thread(self.engine.open_session, df, job_id)
+            opened = await asyncio.to_thread(self.engine.open_session, df, job_id, read_only)
         self.sessions[job_id] = {"start": now, "end": end, "client": job.get("client"),
-                                 "brief": job.get("description", ""), "submitted": False}
+                                 "brief": job.get("description", ""), "read_only": read_only, "submitted": False}
         logger.info("job %s: session open until %s (%s)", job_id, end, [e["kind"] for e in opened])
         return None
 
@@ -110,7 +126,8 @@ class JobDesk:
         trades = [e for e in events if e["kind"] == "trade"]
         return {
             "agent": "Nagi", "category": "grid-trading", "job_id": job_id, "client": s["client"],
-            "session": {"start": s["start"], "end": s["end"]},
+            "session": {"start": s["start"], "end": s["end"],
+                        "mode": "read-only (no entry trade, per your terms)" if s.get("read_only") else "trading"},
             "summary": {"trades": len(trades), "buys": sum(e["action"] == "buy" for e in trades),
                         "sells": sum(e["action"] == "sell" for e in trades),
                         "paused": any(e["kind"] in ("pause", "session-standby") for e in events)},

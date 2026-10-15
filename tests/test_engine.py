@@ -81,6 +81,12 @@ def test_session_entry_trades_when_calm_and_stands_still_in_storm():
     assert [e["kind"] for e in storm] == ["session-standby"]
 
 
+def test_read_only_session_never_trades():
+    ex = FakeExecutor()
+    events = GridEngine(ex).open_session(_sideways(101.0), job_id=4, read_only=True)
+    assert [e["kind"] for e in events] == ["grid-open", "session-read-only"] and ex.swaps == []
+
+
 def test_swap_failure_is_logged_not_raised():
     ex = FakeExecutor()
 

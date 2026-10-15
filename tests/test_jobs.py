@@ -1,17 +1,19 @@
 import asyncio
+import json
 import time
 
 import pandas as pd
 
 from nagi import jobs as jobs_mod
-from nagi.jobs import JobDesk
+from nagi.jobs import JobDesk, terms_forbid_trading
 
 
 class FakeEngine:
     def __init__(self):
         self.log = []
 
-    def open_session(self, df, job_id):
+    def open_session(self, df, job_id, read_only=False):
+        self.read_only = read_only
         e = {"kind": "trade", "action": "sell", "level": 1.0, "tx": "0xt", "receipt": "0xr",
              "ts": int(time.time()), "job_id": job_id}
         self.log.append(e)
@@ -81,6 +83,32 @@ def test_finished_session_submits_report_once(monkeypatch):
     asyncio.run(desk.finish_due())
     asyncio.run(desk.finish_due())
     assert len(ops.submits) == 1 and '"trades":1' in ops.submits[0][1]
+
+
+POKTER_DEFAULT = json.dumps({
+    "version": 1, "task": "Where is the BNB allocated and why?",
+    "terms": {"deliverables": "A JSON assessment with assumptions and data sources.",
+              "quality_standards": "Read-only analysis only. Execute no transaction and move no funds."},
+})
+NAGI_BRIEF = json.dumps({
+    "version": 1, "task": "Run one grid session on BNB testnet and report every trade.",
+    "terms": {"deliverables": "Session report with tx hashes", "quality_standards": "Trade only from Nagi's own wallet"},
+})
+
+
+def test_terms_forbid_trading_reads_the_anchored_brief():
+    assert terms_forbid_trading(POKTER_DEFAULT)
+    assert not terms_forbid_trading(NAGI_BRIEF)
+    assert terms_forbid_trading("please do not execute anything")  # plain-text briefs too
+    assert not terms_forbid_trading("")
+
+
+def test_read_only_brief_opens_session_without_trading(monkeypatch):
+    monkeypatch.setattr(jobs_mod, "fetch_klines", _no_klines)
+    desk = _desk(FakeOps(), FakeClient())
+    asyncio.run(desk.on_funded({"jobId": 11, "expiredAt": int(time.time()) + 90000, "description": POKTER_DEFAULT}))
+    assert desk.engine.read_only is True and desk.sessions[11]["read_only"] is True
+    assert desk.report(11)["session"]["mode"].startswith("read-only")
 
 
 def test_settles_only_after_dispute_window():
