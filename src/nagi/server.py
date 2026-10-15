@@ -18,6 +18,7 @@ import asyncio
 import contextlib
 import logging
 import os
+import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -38,6 +39,7 @@ from nagi.engine import GridEngine  # noqa: E402
 from nagi.executor import Executor  # noqa: E402
 from nagi.jobs import HireBook, JobDesk  # noqa: E402
 from nagi.market import fetch_klines  # noqa: E402
+from nagi.perf import grid_pnl  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 logger = logging.getLogger("nagi")
@@ -85,6 +87,8 @@ engine = GridEngine(executor)
 chain_lock = asyncio.Lock()  # one onchain writer at a time, so nonces never collide
 hirebook = HireBook(client.commerce, wallet.address)  # read-only, safe to run anywhere
 desk: JobDesk | None = None
+STARTED_AT = int(time.time())
+_wallet_cache: dict[str, Any] = {"ts": 0, "bnb": None, "busd": None}
 
 negotiate_limiter = SlidingWindowLimiter(max_requests=120, window_seconds=60.0, max_keys=10_000)
 global_negotiate_limiter = SlidingWindowLimiter(max_requests=1_200, window_seconds=60.0, max_keys=1)
@@ -241,6 +245,25 @@ async def hires():
             if session:
                 j["session_end"] = session["end"]
     return {"agent_id": AGENT_ID, "scanned_jobs": hirebook.scanned, **s}
+
+
+@app.get("/performance")
+async def performance():
+    """Paper P&L vs holding BNB (real prices, since this process started) + live testnet wallet balances."""
+    events = list(engine.log)
+    price_now = next((e["price_ref"] for e in reversed(events) if e.get("price_ref")), None)
+    if time.time() - _wallet_cache["ts"] > 60:
+        try:
+            bal = await asyncio.to_thread(executor.balances)
+            _wallet_cache.update(ts=time.time(), bnb=bal["bnb"] / 1e18, busd=bal["busd"] / 1e18)
+        except Exception as exc:
+            logger.warning("wallet balance read failed: %s", exc)
+    return {
+        "since": STARTED_AT, "price_now": price_now, **grid_pnl(events, price_now),
+        "wallet": {"tbnb": _wallet_cache["bnb"], "busd": _wallet_cache["busd"]},
+        "note": "Paper P&L at real BNB prices vs simply holding BNB; fills happen on BSC testnet. "
+                "Resets when the server restarts. Wallet balances are live from chain.",
+    }
 
 
 @app.get("/activity")

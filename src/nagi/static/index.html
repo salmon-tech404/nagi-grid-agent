@@ -64,6 +64,10 @@
   a:hover { text-decoration: underline; }
   footer { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 13px; }
   .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .pos { color: var(--calm); } .neg { color: var(--storm); }
+  .big { font-size: 34px; font-weight: 700; line-height: 1.1; }
+  .perf { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-end; }
+  .perf .stat b { font-size: 20px; }
 </style>
 </head>
 <body>
@@ -93,6 +97,18 @@
       <tbody id="hires"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
     </table>
     <div class="note">Read straight from the ERC-8183 contract. A hire becomes <b>completed</b> after Nagi delivers its session report and the 15-minute dispute window passes.</div>
+  </section>
+
+  <section class="card">
+    <h2>Performance · grid vs just holding BNB</h2>
+    <div class="perf">
+      <div class="stat"><div class="big mono" id="p-total">–</div><span>profit vs holding</span></div>
+      <div class="stat"><b class="mono" id="p-real">–</b><span>locked in (round trips)</span></div>
+      <div class="stat"><b class="mono" id="p-open">–</b><span>open, at price now</span></div>
+      <div class="stat"><b id="p-trades">–</b><span>trades · round trips</span></div>
+      <div class="stat"><b class="mono" id="p-wallet">–</b><span>testnet wallet (live)</span></div>
+    </div>
+    <div class="note" id="p-note">Paper P&amp;L at real BNB prices; fills happen on BSC testnet.</div>
   </section>
 
   <div class="grid2">
@@ -185,9 +201,29 @@ function renderActivity(a) {
   }).join("");
 }
 
+const usd = (v) => (v >= 0 ? "+$" : "−$") + Math.abs(+v).toFixed(4);
+function setMoney(id, v) {
+  const el = $(id);
+  el.textContent = usd(v);
+  el.classList.remove("pos", "neg");
+  if (+v > 0) el.classList.add("pos"); else if (+v < 0) el.classList.add("neg");
+}
+function renderPerf(p) {
+  setMoney("p-total", p.vs_hold_usd);
+  setMoney("p-real", p.realized_usd);
+  setMoney("p-open", p.unrealized_usd);
+  $("p-trades").textContent = `${p.trades} · ${p.round_trips}`;
+  const w = p.wallet || {};
+  $("p-wallet").textContent = w.tbnb == null ? "…" : `${(+w.tbnb).toFixed(4)} tBNB · ${(+w.busd).toFixed(2)} BUSD`;
+  $("p-note").textContent = `Paper P&L at real BNB prices vs simply holding BNB, since ${new Date(p.since * 1000).toLocaleString()} `
+    + `(resets when the server restarts). Each rung is 0.002 BNB, so amounts are small; watch the sign and the trend. `
+    + `Fills happen on BSC testnet; the wallet line is live from chain.`;
+}
+
 async function load() {
   try {
-    const [api, hires, act] = await Promise.all(["/api", "/hires", "/activity?limit=50"].map((u) => fetch(u).then((r) => r.json())));
+    const [api, hires, act, perf] = await Promise.all(["/api", "/hires", "/activity?limit=50", "/performance"].map((u) => fetch(u).then((r) => r.json())));
+    renderPerf(perf);
     $("live").innerHTML = '<span class="dot"></span>Live';
     $("agent-id").textContent = "#" + api.agent_id;
     $("owner").textContent = short(api.owner);

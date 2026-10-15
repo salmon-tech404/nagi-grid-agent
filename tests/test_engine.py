@@ -44,6 +44,21 @@ def test_first_calm_tick_opens_grid_without_trading():
     assert eng.plan is not None and ex.swaps == []
 
 
+def test_opening_without_busd_funds_the_buy_side_once():
+    ex = FakeExecutor(busd=0)
+    eng = GridEngine(ex)
+    events = eng.tick(_sideways(101.0))
+    assert [e["kind"] for e in events] == ["grid-open", "trade"]
+    assert ex.swaps == [("sell", eng.order_bnb_wei * 4)]
+    assert events[1]["amount_bnb_wei"] == eng.order_bnb_wei * 4
+
+
+def test_session_with_busd_already_funded_takes_a_normal_entry():
+    ex = FakeExecutor()  # plenty of BUSD: no setup trade, one ordinary entry sell
+    events = GridEngine(ex).open_session(_sideways(101.0), job_id=8)
+    assert [e["kind"] for e in events] == ["grid-open", "trade"] and ex.swaps == [("sell", 2 * 10**15)]
+
+
 def test_price_falling_through_a_level_buys_with_receipt():
     ex = FakeExecutor()
     eng = GridEngine(ex)

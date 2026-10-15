@@ -22,6 +22,7 @@ from nagi.receipt import receipt_hash
 
 ORDER_BNB_WEI = 2 * 10**15  # 0.002 tBNB per grid rung
 GAS_RESERVE_WEI = 5 * 10**16  # never trade below 0.05 tBNB, it pays for gas
+BUY_LEVELS = 4  # the buy side must be funded for every rung below the centre
 
 
 class GridEngine:
@@ -43,7 +44,7 @@ class GridEngine:
             return events
         self.state = "calm"
         if self.plan is None:
-            return [self._open(r)]
+            return self._open(r)
         events = []
         for sig in grid.signals(self.plan, self.last_price, r.price):
             if sig.side == "stop":
@@ -62,33 +63,51 @@ class GridEngine:
             return [self._record("session-standby", r, job_id=job_id,
                                  note="hired during a trend: Nagi stands still until the market calms")]
         self.state = "calm"
-        events = [self._open(r, job_id=job_id)]
+        events = self._open(r, trade=not read_only, job_id=job_id)
         if read_only:
             events.append(self._record("session-read-only", r, job_id=job_id,
                                        note="the job's terms forbid transactions: report only, no entry trade"))
-        else:
+        elif not any(e["kind"] == "trade" for e in events):
             events.append(self._trade("sell", r, level=r.price, job_id=job_id, note="session entry"))
         return events
 
-    def _open(self, r: regime.Regime, **extra) -> dict[str, Any]:
+    def _open(self, r: regime.Regime, trade: bool = True, **extra) -> list[dict[str, Any]]:
         self.plan = grid.build_plan(r.price, r.atr)
         self.last_price = r.price
-        return self._record("grid-open", r, levels=[round(lv, 2) for lv in self.plan.levels], **extra)
+        events = [self._record("grid-open", r, levels=[round(lv, 2) for lv in self.plan.levels], **extra)]
+        if trade:
+            seeded = self._fund_buy_side(r, **extra)
+            if seeded:
+                events.append(seeded)
+        return events
 
-    def _trade(self, side: str, r: regime.Regime, level: float, **extra) -> dict[str, Any]:
+    def _fund_buy_side(self, r: regime.Regime, **extra) -> dict[str, Any] | None:
+        """A grid needs both sides: sell enough BNB to hold BUSD for every buy rung."""
+        try:
+            need = self.ex.quote(self.order_bnb_wei, [WBNB, BUSD]) * BUY_LEVELS
+            if self.ex.balances()["busd"] >= need:
+                return None
+        except Exception as exc:
+            return self._log({"kind": "error", "ts": int(time.time()), "note": f"inventory check: {str(exc)[:160]}"})
+        return self._trade("sell", r, level=r.price, amount_wei=self.order_bnb_wei * BUY_LEVELS,
+                           note="grid setup: fund the buy side with BUSD", **extra)
+
+    def _trade(self, side: str, r: regime.Regime, level: float, amount_wei: int | None = None,
+               **extra) -> dict[str, Any]:
+        amount_wei = amount_wei or self.order_bnb_wei
         decision = {
-            "agent": "Nagi", "action": side, "level": round(level, 2), "price_ref": r.price,
+            "agent": "Nagi", "action": side, "amount_bnb_wei": amount_wei, "level": round(level, 2), "price_ref": r.price,
             "regime": r.state, "er": round(r.er, 4), "atr": round(r.atr, 4), "ts": int(time.time()), **extra,
         }
         h = receipt_hash(decision)
         try:
             bal = self.ex.balances()
             if side == "sell":
-                if bal["bnb"] < self.order_bnb_wei + self.gas_reserve_wei:
+                if bal["bnb"] < amount_wei + self.gas_reserve_wei:
                     return self._log({**decision, "kind": "skip", "receipt": h, "note": "BNB at gas reserve"})
-                fill = self.ex.sell_bnb(self.order_bnb_wei, h)
+                fill = self.ex.sell_bnb(amount_wei, h)
             else:
-                busd_in = self.ex.quote(self.order_bnb_wei, [WBNB, BUSD])
+                busd_in = self.ex.quote(amount_wei, [WBNB, BUSD])
                 if bal["busd"] < busd_in:
                     return self._log({**decision, "kind": "skip", "receipt": h, "note": "not enough BUSD to buy"})
                 fill = self.ex.buy_bnb(busd_in, h)
