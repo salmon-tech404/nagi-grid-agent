@@ -1,0 +1,21 @@
+[project]
+name = "nagi-grid-agent"
+version = "0.1.0"
+description = "Nagi: a regime-aware grid trading agent on BNB Chain (ERC-8004 + ERC-8183)."
+requires-python = ">=3.10"
+dependencies = [
+    "bnbagent==0.5.0",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "httpx>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "pandas>=2.0",
+    "numpy>=1.26",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,33 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.keystore
+keystore/
+*.pem
+
+# Private planning notes (kept local, not published)
+PLAN.md
+TASKS.md
+
+# Agent runtime data (deliverables, local storage)
+.agent-data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Foundry
+out/
+cache/
+broadcast/
+
+# Node
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: nagi-grid-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install uv && uv sync --frozen --no-dev
+    startCommand: uv run --no-sync uvicorn nagi.server:app --app-dir src --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PRIVATE_KEY
+        sync: false
+      - key: WALLET_PASSWORD
+        generateValue: true
+      - key: NETWORK
+        value: bsc-testnet
+      - key: AGENT_NAME
+        value: Nagi
+      - key: MARKET_SYMBOL
+        value: BNBUSDT
+      - key: A2A_BASE_URL
+        sync: false
