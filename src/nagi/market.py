@@ -1,4 +1,8 @@
-"""Market data for the regime gate: Binance public klines (no API key)."""
+"""Market data for the regime gate: Binance public klines (no API key).
+
+Uses Binance's market-data-only host: api.binance.com is geo-blocked from some
+cloud regions (e.g. Render Singapore).
+"""
 
 from __future__ import annotations
 
@@ -7,7 +11,7 @@ import pandas as pd
 
 from nagi.indicators import klines_to_df
 
-KLINES_URL = "https://api.binance.com/api/v3/klines"
+KLINES_URL = "https://data-api.binance.vision/api/v3/klines"
 
 
 async def fetch_klines(symbol: str = "BNBUSDT", interval: str = "1h", limit: int = 100) -> pd.DataFrame:

@@ -121,6 +121,17 @@ async def agent_card():
     return AGENT_CARD
 
 
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root():
+    return {
+        "agent": AGENT_NAME,
+        "category": CATEGORY,
+        "agent_card": f"{BASE_URL}/.well-known/agent-card.json",
+        "a2a": f"{BASE_URL}/a2a",
+        "health": f"{BASE_URL}/health",
+    }
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "agent": AGENT_NAME, "address": wallet.address, "network": NETWORK}
