@@ -61,6 +61,7 @@ SERVICE_PRICE = os.getenv("ERC8183_SERVICE_PRICE", "100000000000000000")  # 0.1 
 MARKET_SYMBOL = os.getenv("MARKET_SYMBOL", "BNBUSDT")
 AGENT_ID = os.getenv("AGENT_ID", "2623")
 DASHBOARD = Path(__file__).resolve().parent / "static" / "index.html"
+LOGO = Path(__file__).resolve().parent / "static" / "logo.png"
 RUN_LOOPS = os.getenv("NAGI_RUN_LOOPS") == "1"
 GRID_INTERVAL = int(os.getenv("GRID_INTERVAL", "300"))
 SESSION_SECONDS = int(os.getenv("NAGI_SESSION_MINUTES", "60")) * 60
@@ -99,6 +100,8 @@ AGENT_CARD: dict[str, Any] = {
     "description": AGENT_DESCRIPTION,
     "category": CATEGORY,
     "url": f"{BASE_URL}/a2a",
+    "iconUrl": f"{BASE_URL}/logo.png",
+    "documentationUrl": "https://github.com/salmon-tech404/nagi-grid-agent",
     "preferredTransport": "JSONRPC",
     "version": "0.1.0",
     "capabilities": {"streaming": False, "pushNotifications": False},
@@ -218,6 +221,11 @@ async def agent_card():
 @app.api_route("/", methods=["GET", "HEAD"])
 async def dashboard():
     return FileResponse(DASHBOARD, media_type="text/html")
+
+
+@app.api_route("/logo.png", methods=["GET", "HEAD"])
+async def logo():
+    return FileResponse(LOGO, media_type="image/png", headers={"Cache-Control": "public, max-age=86400"})
 
 
 @app.get("/api")

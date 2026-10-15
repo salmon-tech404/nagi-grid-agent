@@ -34,6 +34,16 @@ DESCRIPTION = (
 )
 
 
+def build_agent_uri(sdk, base_url: str, name: str, image: str | None = None, agent_id: int | None = None) -> str:
+    endpoint = AgentEndpoint.a2a(base_url, version="0.3.0")
+    uri = sdk.generate_agent_uri(name=name, description=DESCRIPTION, endpoints=[endpoint], image=image, agent_id=agent_id)
+    return _with_category(uri)
+
+
+def decode_agent_uri(agent_uri: str) -> dict:
+    return json.loads(base64.b64decode(agent_uri.split(",", 1)[1]))
+
+
 def _with_category(agent_uri: str) -> str:
     """Add category + skills to the SDK-generated registration file (base64 data URI)."""
     prefix, payload = agent_uri.split(",", 1)

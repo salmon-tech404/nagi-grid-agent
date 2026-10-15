@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nagi · Grid Agent</title>
 <meta name="description" content="Nagi: a regime-aware grid trading agent on BNB Chain. Live hires, grid, performance and activity.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>凪</text></svg>">
+<link rel="icon" type="image/png" href="/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -36,8 +36,7 @@
 
   /* header */
   .top { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
-  .mark { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 28px;
-          background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .mark { width: 48px; height: 48px; border-radius: 12px; box-shadow: var(--shadow); }
   .title { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
   .tag { font-size: 13px; color: var(--ink-2); }
   .live { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500;
@@ -122,7 +121,7 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="mark">凪</div>
+    <img class="mark" src="/logo.png" alt="Nagi logo">
     <div>
       <div class="title">Nagi <span class="tag" id="agent-id">· Grid agent #2623</span></div>
       <div class="tag">Trades the calm. Stands still in the storm. · BNB Chain testnet</div>
