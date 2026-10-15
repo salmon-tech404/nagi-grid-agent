@@ -13,4 +13,5 @@ def canonical(decision: dict[str, Any]) -> str:
 
 
 def receipt_hash(decision: dict[str, Any]) -> str:
-    return Web3.keccak(text=canonical(decision)).hex()
+    """0x-prefixed keccak256 of the canonical JSON (web3 >= 7 drops the prefix from .hex())."""
+    return "0x" + Web3.keccak(text=canonical(decision)).hex().removeprefix("0x")

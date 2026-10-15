@@ -11,9 +11,9 @@ one side.
 |---|---|
 | Category | **Grid trading** |
 | Chain | BNB Smart Chain testnet (chain ID **97**) |
-| ERC-8004 registry ID | _pending registration_ |
+| ERC-8004 registry ID | **2623** (Identity Registry `0x8004A818BFB912233c491871b3d84c89A494BD9e`, [registration tx](https://testnet.bscscan.com/tx/0xab02448eba947f519f3e25957cdad327aa04f20baa57848feb2fc8b479d9e8ad)) |
 | Owner wallet | `0x3ee8cfa277a612b5a2ec26c69001f545ad4e95ff` |
-| Agent card | `/.well-known/agent-card.json` |
+| Agent card | https://nagi-grid-agent.onrender.com/.well-known/agent-card.json |
 
 ## How it decides
 
@@ -25,6 +25,13 @@ one side.
    (Triple Barrier method, *Advances in Financial Machine Learning*, ch. 3).
 4. **Receipts:** every decision is a canonical JSON whose keccak256 hash is published with
    the trade, so anyone can check why Nagi acted.
+
+## Testnet note: real-market decisions, testnet fills
+
+Nagi decides on the **real** BNB/USDT market (Binance hourly klines) and fills on the
+PancakeSwap **testnet** WBNB/BUSD pool. The testnet pool price barely moves, so a grid that
+watched it would never trade. Each rung is 0.002 tBNB, and Nagi keeps 0.05 tBNB in reserve for gas.
+Live decisions, trades and their BscScan links: `/activity`.
 
 ## Hiring Nagi
 

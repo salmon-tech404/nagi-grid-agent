@@ -9,6 +9,7 @@ keystore/
 # Private planning notes (kept local, not published)
 PLAN.md
 TASKS.md
+NOTES.md
 
 # Agent runtime data (deliverables, local storage)
 .agent-data/

@@ -2,12 +2,20 @@
 
 Adapted from bnbagent-sdk python/examples/a2a-agent/src/server.py (copy-and-own).
 
+With NAGI_RUN_LOOPS=1 (set only on the deployed instance, never locally at the
+same time: both would trade from the same wallet) the server also runs:
+  - the grid loop       every GRID_INTERVAL seconds
+  - the funded-job watcher (opens a grid session per hire)
+  - the job desk        submits session reports and settles after the dispute window
+
 Run:
     uv run uvicorn nagi.server:app --app-dir src --port 8010
 """
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import logging
 import os
 import uuid
@@ -21,10 +29,14 @@ from fastapi.responses import JSONResponse
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 from bnbagent import EVMWalletProvider  # noqa: E402
-from bnbagent.erc8183 import ERC8183Client, NegotiationHandler  # noqa: E402
+from bnbagent.erc8183 import ERC8183Client, ERC8183JobOps, NegotiationHandler, funded_job_watcher  # noqa: E402
+from bnbagent.storage import IPFSStorageProvider  # noqa: E402
 from bnbagent.utils import RateLimitExceeded, SlidingWindowLimiter  # noqa: E402
 
 from nagi import regime  # noqa: E402
+from nagi.engine import GridEngine  # noqa: E402
+from nagi.executor import Executor  # noqa: E402
+from nagi.jobs import JobDesk  # noqa: E402
 from nagi.market import fetch_klines  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
@@ -38,13 +50,16 @@ AGENT_DESCRIPTION = os.getenv(
     "is sideways and stands still when the Kaufman efficiency ratio signals a trend. "
     "Every decision is published with an onchain receipt hash.",
 )
-CATEGORY = "grid"
+CATEGORY = "grid-trading"
 # Render injects RENDER_EXTERNAL_URL; A2A_BASE_URL overrides it (e.g. a custom domain).
 BASE_URL = (
     os.getenv("A2A_BASE_URL") or os.getenv("RENDER_EXTERNAL_URL") or "http://localhost:8010"
 ).rstrip("/")
-SERVICE_PRICE = os.getenv("ERC8183_SERVICE_PRICE", "1000000000000000000")  # 1 U
+SERVICE_PRICE = os.getenv("ERC8183_SERVICE_PRICE", "100000000000000000")  # 0.1 U
 MARKET_SYMBOL = os.getenv("MARKET_SYMBOL", "BNBUSDT")
+RUN_LOOPS = os.getenv("NAGI_RUN_LOOPS") == "1"
+GRID_INTERVAL = int(os.getenv("GRID_INTERVAL", "300"))
+SESSION_SECONDS = int(os.getenv("NAGI_SESSION_MINUTES", "60")) * 60
 
 _private_key = os.getenv("PRIVATE_KEY")
 _wallet_password = os.getenv("WALLET_PASSWORD")
@@ -62,6 +77,10 @@ negotiation_handler = NegotiationHandler(
     chain_id=client.network.chain_id,
     verifying_contract=client.commerce.address,
 )
+
+executor = Executor(wallet)
+engine = GridEngine(executor)
+chain_lock = asyncio.Lock()  # one onchain writer at a time, so nonces never collide
 
 negotiate_limiter = SlidingWindowLimiter(max_requests=120, window_seconds=60.0, max_keys=10_000)
 global_negotiate_limiter = SlidingWindowLimiter(max_requests=1_200, window_seconds=60.0, max_keys=1)
@@ -113,7 +132,58 @@ AGENT_CARD: dict[str, Any] = {
     ],
 }
 
-app = FastAPI(title=AGENT_NAME)
+async def _grid_loop() -> None:
+    while True:
+        try:
+            df = await fetch_klines(MARKET_SYMBOL)
+            async with chain_lock:
+                events = await asyncio.to_thread(engine.tick, df)
+            for e in events:
+                logger.info("grid %s %s", e["kind"], e.get("tx") or e.get("reason") or e.get("note", ""))
+        except Exception as exc:
+            logger.error("grid tick failed: %s", exc)
+        await asyncio.sleep(GRID_INTERVAL)
+
+
+async def _desk_loop(desk: JobDesk) -> None:
+    tick = 0
+    while True:
+        # settle_due rescans every job onchain, so run it every 5 minutes (dispute window is 15).
+        steps = (desk.finish_due, desk.settle_due) if tick % 5 == 0 else (desk.finish_due,)
+        for step in steps:
+            try:
+                await step()
+            except Exception as exc:
+                logger.error("job desk %s failed: %s", step.__name__, exc)
+        tick += 1
+        await asyncio.sleep(60)
+
+
+@contextlib.asynccontextmanager
+async def lifespan(_: FastAPI):
+    tasks: list[asyncio.Task] = []
+    if RUN_LOOPS:
+        ops = ERC8183JobOps(
+            wallet, NETWORK,
+            storage_provider=IPFSStorageProvider.from_env(),  # Render's disk is wiped on restart
+            service_price=int(SERVICE_PRICE),
+            agent_url=f"{BASE_URL}/erc8183",
+        )
+        desk = JobDesk(ops, client, engine, chain_lock, session_seconds=SESSION_SECONDS, market_symbol=MARKET_SYMBOL)
+        tasks = [
+            asyncio.create_task(_grid_loop()),
+            asyncio.create_task(funded_job_watcher(ops, desk.on_funded, interval=30)),
+            asyncio.create_task(_desk_loop(desk)),
+        ]
+        logger.info("loops running: grid every %ss, job watcher, job desk", GRID_INTERVAL)
+    else:
+        logger.info("loops disabled (set NAGI_RUN_LOOPS=1 on the deployed instance only)")
+    yield
+    for t in tasks:
+        t.cancel()
+
+
+app = FastAPI(title=AGENT_NAME, lifespan=lifespan)
 
 
 @app.get("/.well-known/agent-card.json")
@@ -129,7 +199,21 @@ async def root():
         "agent_card": f"{BASE_URL}/.well-known/agent-card.json",
         "a2a": f"{BASE_URL}/a2a",
         "health": f"{BASE_URL}/health",
+        "activity": f"{BASE_URL}/activity",
     }
+
+
+@app.get("/activity")
+async def activity(limit: int = 50):
+    """Latest decisions, newest first. Trades link to BscScan; receipts are in the tx input."""
+    events = [
+        {**e, "bscscan": f"https://testnet.bscscan.com/tx/{e['tx']}"} if e.get("tx") else e
+        for e in list(engine.log)[-max(1, min(limit, 500)):][::-1]
+    ]
+    return {"agent": AGENT_NAME, "loops": RUN_LOOPS, "state": engine.state,
+            "grid": None if engine.plan is None else {"center": engine.plan.center, "step": engine.plan.step,
+                                                      "levels": [round(lv, 2) for lv in engine.plan.levels]},
+            "events": events}
 
 
 @app.get("/health")
