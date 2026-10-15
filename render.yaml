@@ -19,5 +19,3 @@ services:
         value: Nagi
       - key: MARKET_SYMBOL
         value: BNBUSDT
-      - key: A2A_BASE_URL
-        sync: false

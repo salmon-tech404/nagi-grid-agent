@@ -39,7 +39,10 @@ AGENT_DESCRIPTION = os.getenv(
     "Every decision is published with an onchain receipt hash.",
 )
 CATEGORY = "grid"
-BASE_URL = os.getenv("A2A_BASE_URL", "http://localhost:8010").rstrip("/")
+# Render injects RENDER_EXTERNAL_URL; A2A_BASE_URL overrides it (e.g. a custom domain).
+BASE_URL = (
+    os.getenv("A2A_BASE_URL") or os.getenv("RENDER_EXTERNAL_URL") or "http://localhost:8010"
+).rstrip("/")
 SERVICE_PRICE = os.getenv("ERC8183_SERVICE_PRICE", "1000000000000000000")  # 1 U
 MARKET_SYMBOL = os.getenv("MARKET_SYMBOL", "BNBUSDT")
 
