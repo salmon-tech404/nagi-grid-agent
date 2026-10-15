@@ -23,6 +23,52 @@ logger = logging.getLogger("nagi.jobs")
 SUBMIT_MARGIN = 300  # submit at least 5 minutes before the policy's submit deadline
 
 
+FINAL = ("COMPLETED", "REJECTED", "EXPIRED")
+
+
+class HireBook:
+    """Every ERC-8183 job whose provider is Nagi, read from chain, so it survives restarts.
+
+    The first refresh scans all jobs; later ones read only new job ids plus the
+    jobs that are still open. Synchronous: run it in a thread.
+    """
+
+    def __init__(self, commerce, provider: str, chunk: int = 200):
+        self.commerce = commerce
+        self.me = provider.lower()
+        self.chunk = chunk
+        self.scanned = 0
+        self.jobs: dict[int, dict[str, Any]] = {}
+
+    def refresh(self) -> None:
+        counter = self.commerce.job_counter()
+        new_ids = list(range(self.scanned + 1, counter + 1))
+        open_ids = [i for i, j in self.jobs.items() if j["status"] not in FINAL]
+        for ids in (new_ids, open_ids):
+            for i in range(0, len(ids), self.chunk):
+                for job in self.commerce.get_jobs_batch(ids[i:i + self.chunk]):
+                    if job is not None and job.provider.lower() == self.me:
+                        self.jobs[job.id] = self._view(job)
+        self.scanned = counter
+
+    @staticmethod
+    def _view(job) -> dict[str, Any]:
+        return {
+            "job_id": job.id, "client": job.client, "budget_u": job.budget / 1e18,
+            "status": job.status.name, "expired_at": job.expired_at, "submitted_at": job.submitted_at,
+            "brief": (job.description or "")[:300],
+        }
+
+    def summary(self) -> dict[str, Any]:
+        jobs = sorted(self.jobs.values(), key=lambda j: j["job_id"], reverse=True)
+        return {
+            "total": len(jobs),
+            "running": sum(j["status"] in ("FUNDED", "SUBMITTED") for j in jobs),
+            "completed": sum(j["status"] == "COMPLETED" for j in jobs),
+            "jobs": jobs,
+        }
+
+
 class JobDesk:
     def __init__(self, ops, client, engine, chain_lock: asyncio.Lock, session_seconds: int = 3600,
                  market_symbol: str = "BNBUSDT"):

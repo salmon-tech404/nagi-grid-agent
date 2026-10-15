@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nagi · Grid Agent #2623</title>
+<meta name="description" content="Nagi: a regime-aware grid trading agent on BNB Chain. Live hires, grid and trades.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>凪</text></svg>">
+<style>
+  :root {
+    --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e4e2dc;
+    --calm: #1f8a70; --calm-bg: #e3f3ee; --storm: #c2410c; --storm-bg: #fbe9df;
+    --buy: #1f8a70; --sell: #b45309; --accent: #2b59c3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121312; --card: #1b1c1b; --ink: #ecebe6; --muted: #9a9993; --line: #2c2d2b;
+      --calm: #4cc39d; --calm-bg: #173229; --storm: #f08a4b; --storm-bg: #3a2216;
+      --buy: #4cc39d; --sell: #f0b35a; --accent: #7aa2ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 20px; }
+  .logo { font-size: 40px; line-height: 1; }
+  h1 { font-size: 22px; margin: 0; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .pill { padding: 4px 10px; border-radius: 999px; font-size: 13px; background: var(--card);
+          border: 1px solid var(--line); white-space: nowrap; }
+  .pill.calm { background: var(--calm-bg); color: var(--calm); border-color: transparent; }
+  .pill.storm { background: var(--storm-bg); color: var(--storm); border-color: transparent; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--calm); margin-right: 6px; }
+  .dot.off { background: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat b { display: block; font-size: 28px; line-height: 1.1; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+  .badge { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--bg); white-space: nowrap; }
+  .badge.FUNDED, .badge.SUBMITTED { color: var(--accent); }
+  .badge.COMPLETED { color: var(--calm); }
+  .badge.REJECTED, .badge.EXPIRED { color: var(--storm); }
+  .empty { color: var(--muted); padding: 8px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .pills { margin-left: 0; } }
+  .ladder div { display: flex; justify-content: space-between; padding: 3px 8px; border-radius: 6px; font-size: 14px; }
+  .ladder .sell { color: var(--sell); }
+  .ladder .buy { color: var(--buy); }
+  .ladder .now { background: var(--bg); font-weight: 600; }
+  .ev { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .ev:last-child { border-bottom: 0; }
+  .ev .t { color: var(--muted); font-size: 12px; min-width: 64px; }
+  .ev .k { min-width: 70px; font-weight: 600; }
+  .k.buy { color: var(--buy); } .k.sell { color: var(--sell); } .k.pause { color: var(--storm); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  footer { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 13px; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">凪</div>
+    <div>
+      <h1>Nagi · Grid Agent <span id="agent-id">#2623</span></h1>
+      <div class="sub">Trades the calm. Stands still in the storm. · BNB Smart Chain testnet</div>
+    </div>
+    <div class="pills">
+      <span class="pill" id="live"><span class="dot off"></span>Connecting…</span>
+      <span class="pill" id="regime">Market: …</span>
+      <span class="pill mono" id="price">BNB …</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>Hires</h2>
+    <div class="stats">
+      <div class="stat"><b id="h-total">–</b><span>total hires</span></div>
+      <div class="stat"><b id="h-running">–</b><span>in progress</span></div>
+      <div class="stat"><b id="h-done">–</b><span>completed</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Job</th><th>Client</th><th>Budget</th><th>Status</th><th>When</th></tr></thead>
+      <tbody id="hires"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+    </table>
+    <div class="note">Read straight from the ERC-8183 contract. A hire becomes <b>completed</b> after Nagi delivers its session report and the 15-minute dispute window passes.</div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Grid</h2>
+      <div class="ladder" id="ladder"><div class="empty">No grid yet.</div></div>
+      <div class="note" id="grid-note"></div>
+    </section>
+    <section class="card">
+      <h2>Recent decisions</h2>
+      <div id="events"><div class="empty">Loading…</div></div>
+    </section>
+  </div>
+
+  <footer>
+    <span>Owner <a class="mono" id="owner" target="_blank" rel="noopener" href="#">…</a></span>
+    <a target="_blank" rel="noopener" href="https://testnet.8004scan.io">ERC-8004 identity</a>
+    <a target="_blank" rel="noopener" href="https://github.com/salmon-tech404/nagi-grid-agent">Source on GitHub</a>
+    <a target="_blank" rel="noopener" href="/.well-known/agent-card.json">Agent card</a>
+    <a target="_blank" rel="noopener" href="https://pokter.xyz">Hire on Pokter</a>
+    <span id="updated"></span>
+  </footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const short = (a) => a ? a.slice(0, 6) + "…" + a.slice(-4) : "";
+const scan = (path) => "https://testnet.bscscan.com/" + path;
+const ago = (ts) => {
+  if (!ts) return "";
+  const s = Math.round(Date.now() / 1000 - ts);
+  if (s < 0) return "in " + fmtDur(-s);
+  return fmtDur(s) + " ago";
+};
+const fmtDur = (s) => s < 60 ? s + "s" : s < 3600 ? Math.round(s / 60) + "m" : s < 86400 ? Math.round(s / 3600) + "h" : Math.round(s / 86400) + "d";
+const STATUS = { FUNDED: "Running", SUBMITTED: "Delivered · in review", COMPLETED: "Completed", REJECTED: "Rejected", EXPIRED: "Expired", OPEN: "Not funded" };
+
+function renderHires(h) {
+  $("h-total").textContent = h.total;
+  $("h-running").textContent = h.running;
+  $("h-done").textContent = h.completed;
+  if (!h.jobs.length) {
+    $("hires").innerHTML = `<tr><td colspan="5" class="empty">No hires yet${h.scanned_jobs ? ` (scanned ${h.scanned_jobs} jobs)` : ""}.</td></tr>`;
+    return;
+  }
+  $("hires").innerHTML = h.jobs.map((j) => {
+    let when = j.status === "FUNDED" && j.session_end ? "session ends " + ago(j.session_end)
+             : j.submitted_at ? "delivered " + ago(j.submitted_at) : "expires " + ago(j.expired_at);
+    return `<tr>
+      <td class="mono">#${j.job_id}</td>
+      <td class="mono"><a target="_blank" rel="noopener" href="${scan("address/" + esc(j.client))}">${esc(short(j.client))}</a></td>
+      <td>${(+j.budget_u).toFixed(2)} U</td>
+      <td><span class="badge ${esc(j.status)}">${esc(STATUS[j.status] || j.status)}</span></td>
+      <td>${esc(when)}</td></tr>`;
+  }).join("");
+}
+
+function renderActivity(a) {
+  const ev = a.events || [];
+  const lastPrice = (ev.find((e) => e.price_ref) || {}).price_ref;
+  const lastEr = (ev.find((e) => e.er !== undefined) || {}).er;
+  if (lastPrice) $("price").textContent = "BNB $" + (+lastPrice).toFixed(2);
+  const r = $("regime");
+  if (a.state === "calm") { r.className = "pill calm"; r.textContent = `🌊 Calm · grid active${lastEr !== undefined ? " · ER " + (+lastEr).toFixed(2) : ""}`; }
+  else if (a.state === "storm") { r.className = "pill storm"; r.textContent = `⛈ Storm · standing still${lastEr !== undefined ? " · ER " + (+lastEr).toFixed(2) : ""}`; }
+  else { r.className = "pill"; r.textContent = "Market: waiting for first tick"; }
+
+  if (a.grid) {
+    const rows = [...a.grid.levels].sort((x, y) => y - x).map((lv) => ({ lv, side: lv > a.grid.center ? "sell" : "buy" }));
+    if (lastPrice) rows.push({ lv: +lastPrice, side: "now" });
+    rows.sort((x, y) => y.lv - x.lv);
+    $("ladder").innerHTML = rows.map((r) => r.side === "now"
+      ? `<div class="now"><span>◀ price now</span><span class="mono">${r.lv.toFixed(2)}</span></div>`
+      : `<div class="${r.side}"><span>${r.side}</span><span class="mono">${r.lv.toFixed(2)}</span></div>`).join("");
+    $("grid-note").textContent = `Step $${(+a.grid.step).toFixed(2)} (0.5 × ATR). Price crossing a level down buys, up sells.`;
+  } else {
+    $("ladder").innerHTML = `<div class="empty">${a.state === "storm" ? "Grid paused while the market trends." : "No grid yet."}</div>`;
+    $("grid-note").textContent = "";
+  }
+
+  if (!ev.length) { $("events").innerHTML = `<div class="empty">No decisions yet${a.loops ? "" : " (loops are off on this instance)"}.</div>`; return; }
+  $("events").innerHTML = ev.slice(0, 12).map((e) => {
+    const label = e.kind === "trade" ? e.action : e.kind;
+    const cls = e.kind === "trade" ? e.action : (e.kind === "pause" || e.kind === "session-standby") ? "pause" : "";
+    const what = e.kind === "trade"
+      ? `@ ${(+e.level).toFixed(2)}${e.job_id ? ` · job #${e.job_id}` : ""} · <a target="_blank" rel="noopener" href="${scan("tx/" + esc(e.tx))}">BscScan</a>`
+      : esc(e.note || e.reason || "");
+    return `<div class="ev"><span class="t">${esc(ago(e.ts))}</span><span class="k ${cls}">${esc(label)}</span><span>${what}</span></div>`;
+  }).join("");
+}
+
+async function load() {
+  try {
+    const [api, hires, act] = await Promise.all(["/api", "/hires", "/activity?limit=50"].map((u) => fetch(u).then((r) => r.json())));
+    $("live").innerHTML = '<span class="dot"></span>Live';
+    $("agent-id").textContent = "#" + api.agent_id;
+    $("owner").textContent = short(api.owner);
+    $("owner").href = scan("address/" + api.owner);
+    renderHires(hires);
+    renderActivity(act);
+    $("updated").textContent = "Updated " + new Date().toLocaleTimeString() + " · refreshes every 30s";
+  } catch (err) {
+    $("live").innerHTML = '<span class="dot off"></span>Offline';
+  }
+}
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

@@ -24,7 +24,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
@@ -36,7 +36,7 @@ from bnbagent.utils import RateLimitExceeded, SlidingWindowLimiter  # noqa: E402
 from nagi import regime  # noqa: E402
 from nagi.engine import GridEngine  # noqa: E402
 from nagi.executor import Executor  # noqa: E402
-from nagi.jobs import JobDesk  # noqa: E402
+from nagi.jobs import HireBook, JobDesk  # noqa: E402
 from nagi.market import fetch_klines  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
@@ -57,6 +57,8 @@ BASE_URL = (
 ).rstrip("/")
 SERVICE_PRICE = os.getenv("ERC8183_SERVICE_PRICE", "100000000000000000")  # 0.1 U
 MARKET_SYMBOL = os.getenv("MARKET_SYMBOL", "BNBUSDT")
+AGENT_ID = os.getenv("AGENT_ID", "2623")
+DASHBOARD = Path(__file__).resolve().parent / "static" / "index.html"
 RUN_LOOPS = os.getenv("NAGI_RUN_LOOPS") == "1"
 GRID_INTERVAL = int(os.getenv("GRID_INTERVAL", "300"))
 SESSION_SECONDS = int(os.getenv("NAGI_SESSION_MINUTES", "60")) * 60
@@ -81,6 +83,8 @@ negotiation_handler = NegotiationHandler(
 executor = Executor(wallet)
 engine = GridEngine(executor)
 chain_lock = asyncio.Lock()  # one onchain writer at a time, so nonces never collide
+hirebook = HireBook(client.commerce, wallet.address)  # read-only, safe to run anywhere
+desk: JobDesk | None = None
 
 negotiate_limiter = SlidingWindowLimiter(max_requests=120, window_seconds=60.0, max_keys=10_000)
 global_negotiate_limiter = SlidingWindowLimiter(max_requests=1_200, window_seconds=60.0, max_keys=1)
@@ -159,9 +163,19 @@ async def _desk_loop(desk: JobDesk) -> None:
         await asyncio.sleep(60)
 
 
+async def _hires_loop() -> None:
+    while True:
+        try:
+            await asyncio.to_thread(hirebook.refresh)
+        except Exception as exc:
+            logger.error("hire book refresh failed: %s", exc)
+        await asyncio.sleep(60)
+
+
 @contextlib.asynccontextmanager
 async def lifespan(_: FastAPI):
-    tasks: list[asyncio.Task] = []
+    global desk
+    tasks: list[asyncio.Task] = [asyncio.create_task(_hires_loop())]
     if RUN_LOOPS:
         ops = ERC8183JobOps(
             wallet, NETWORK,
@@ -170,7 +184,7 @@ async def lifespan(_: FastAPI):
             agent_url=f"{BASE_URL}/erc8183",
         )
         desk = JobDesk(ops, client, engine, chain_lock, session_seconds=SESSION_SECONDS, market_symbol=MARKET_SYMBOL)
-        tasks = [
+        tasks += [
             asyncio.create_task(_grid_loop()),
             asyncio.create_task(funded_job_watcher(ops, desk.on_funded, interval=30)),
             asyncio.create_task(_desk_loop(desk)),
@@ -192,15 +206,35 @@ async def agent_card():
 
 
 @app.api_route("/", methods=["GET", "HEAD"])
-async def root():
+async def dashboard():
+    return FileResponse(DASHBOARD, media_type="text/html")
+
+
+@app.get("/api")
+async def api_index():
     return {
         "agent": AGENT_NAME,
+        "agent_id": AGENT_ID,
+        "owner": wallet.address,
+        "hires": f"{BASE_URL}/hires",
         "category": CATEGORY,
         "agent_card": f"{BASE_URL}/.well-known/agent-card.json",
         "a2a": f"{BASE_URL}/a2a",
         "health": f"{BASE_URL}/health",
         "activity": f"{BASE_URL}/activity",
     }
+
+
+@app.get("/hires")
+async def hires():
+    """ERC-8183 jobs where Nagi is the provider, straight from chain, newest first."""
+    s = hirebook.summary()
+    if desk is not None:
+        for j in s["jobs"]:
+            session = desk.sessions.get(j["job_id"])
+            if session:
+                j["session_end"] = session["end"]
+    return {"agent_id": AGENT_ID, "scanned_jobs": hirebook.scanned, **s}
 
 
 @app.get("/activity")
