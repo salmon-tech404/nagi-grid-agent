@@ -3,133 +3,180 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nagi · Grid Agent #2623</title>
-<meta name="description" content="Nagi: a regime-aware grid trading agent on BNB Chain. Live hires, grid and trades.">
+<title>Nagi · Grid Agent</title>
+<meta name="description" content="Nagi: a regime-aware grid trading agent on BNB Chain. Live hires, grid, performance and activity.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>凪</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e4e2dc;
-    --calm: #1f8a70; --calm-bg: #e3f3ee; --storm: #c2410c; --storm-bg: #fbe9df;
-    --buy: #1f8a70; --sell: #b45309; --accent: #2b59c3;
+    --bg: #f5f6f8; --surface: #ffffff; --surface-2: #f0f2f5; --ink: #0f172a; --ink-2: #475569; --muted: #94a3b8;
+    --line: #e5e7eb; --shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 16px rgba(15, 23, 42, .04);
+    --brand: #0ea5a4; --calm: #059669; --calm-soft: #d1fae5; --storm: #ea580c; --storm-soft: #ffedd5;
+    --buy: #059669; --sell: #d97706; --link: #2563eb;
+    --r: 16px; --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #121312; --card: #1b1c1b; --ink: #ecebe6; --muted: #9a9993; --line: #2c2d2b;
-      --calm: #4cc39d; --calm-bg: #173229; --storm: #f08a4b; --storm-bg: #3a2216;
-      --buy: #4cc39d; --sell: #f0b35a; --accent: #7aa2ff;
+      --bg: #0b0f17; --surface: #121826; --surface-2: #1a2232; --ink: #e2e8f0; --ink-2: #a5b1c4; --muted: #64748b;
+      --line: #1f2a3c; --shadow: none; --brand: #2dd4bf; --calm: #34d399; --calm-soft: #0f2e25;
+      --storm: #fb923c; --storm-soft: #3a2010; --buy: #34d399; --sell: #fbbf24; --link: #60a5fa;
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
-  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 20px; }
-  .logo { font-size: 40px; line-height: 1; }
-  h1 { font-size: 22px; margin: 0; }
-  .sub { color: var(--muted); font-size: 13px; }
-  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
-  .pill { padding: 4px 10px; border-radius: 999px; font-size: 13px; background: var(--card);
-          border: 1px solid var(--line); white-space: nowrap; }
-  .pill.calm { background: var(--calm-bg); color: var(--calm); border-color: transparent; }
-  .pill.storm { background: var(--storm-bg); color: var(--storm); border-color: transparent; }
-  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--calm); margin-right: 6px; }
-  .dot.off { background: var(--muted); }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
-  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
-  .stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
-  .stat b { display: block; font-size: 28px; line-height: 1.1; }
-  .stat span { color: var(--muted); font-size: 13px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
-  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  tr:last-child td { border-bottom: 0; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
-  .badge { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--bg); white-space: nowrap; }
-  .badge.FUNDED, .badge.SUBMITTED { color: var(--accent); }
-  .badge.COMPLETED { color: var(--calm); }
-  .badge.REJECTED, .badge.EXPIRED { color: var(--storm); }
-  .empty { color: var(--muted); padding: 8px 0; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; }
-  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .pills { margin-left: 0; } }
-  .ladder div { display: flex; justify-content: space-between; padding: 3px 8px; border-radius: 6px; font-size: 14px; }
-  .ladder .sell { color: var(--sell); }
-  .ladder .buy { color: var(--buy); }
-  .ladder .now { background: var(--bg); font-weight: 600; }
-  .ev { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
-  .ev:last-child { border-bottom: 0; }
-  .ev .t { color: var(--muted); font-size: 12px; min-width: 64px; }
-  .ev .k { min-width: 70px; font-weight: 600; }
-  .k.buy { color: var(--buy); } .k.sell { color: var(--sell); } .k.pause { color: var(--storm); }
-  a { color: var(--accent); text-decoration: none; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font); }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--mono); font-size: 13px; }
+  a { color: var(--link); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  footer { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 13px; }
-  .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 16px 56px; }
+
+  /* header */
+  .top { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+  .mark { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 28px;
+          background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .title { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+  .tag { font-size: 13px; color: var(--ink-2); }
+  .live { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500;
+          padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .live.on i { background: var(--calm); box-shadow: 0 0 0 4px var(--calm-soft); }
+
+  /* kpis */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+  .kpis > *, .row > * { min-width: 0; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi .label { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+  .kpi .value { font-size: 24px; font-weight: 600; letter-spacing: -.01em; margin-top: 6px; }
+  .kpi .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .calm-c { color: var(--calm); } .storm-c { color: var(--storm); }
   .pos { color: var(--calm); } .neg { color: var(--storm); }
-  .big { font-size: 34px; font-weight: 700; line-height: 1.1; }
-  .perf { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-end; }
-  .perf .stat b { font-size: 20px; }
+
+  /* cards */
+  .row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; box-shadow: var(--shadow); }
+  .card h2 { font-size: 15px; font-weight: 600; margin: 0 0 14px; display: flex; align-items: center; gap: 6px; }
+  .card h2 .count { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+
+  /* help tooltip */
+  .help { position: relative; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%;
+          font-size: 11px; font-weight: 600; color: var(--ink-2); background: var(--surface-2); cursor: help; }
+  .help:hover::after, .help:focus::after { content: attr(data-tip); position: absolute; z-index: 10; top: 22px; left: 50%;
+          transform: translateX(-50%); width: 260px; padding: 10px 12px; border-radius: 10px; background: var(--ink);
+          color: var(--bg); font-size: 13px; font-weight: 400; line-height: 1.45; text-align: left; }
+
+  /* empty state */
+  .empty { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; background: var(--surface-2);
+           color: var(--ink-2); font-size: 14px; }
+  .empty .ico { font-size: 20px; }
+
+  /* hires */
+  .hire { display: grid; grid-template-columns: 70px 1fr auto auto; gap: 12px; align-items: center; padding: 10px 0;
+          border-bottom: 1px solid var(--line); font-size: 14px; }
+  .hire:last-child { border-bottom: 0; }
+  .status { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); white-space: nowrap; }
+  .status.run { color: var(--link); } .status.done { color: var(--calm); background: var(--calm-soft); }
+  .status.bad { color: var(--storm); background: var(--storm-soft); }
+  .when { color: var(--muted); font-size: 13px; }
+
+  /* grid ladder */
+  .ladder { display: flex; flex-direction: column; gap: 4px; }
+  .lv { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-radius: 8px; font-size: 14px; }
+  .lv .side { font-size: 12px; font-weight: 600; }
+  .lv.sell .side { color: var(--sell); } .lv.buy .side { color: var(--buy); }
+  .lv.now { background: var(--surface-2); font-weight: 600; }
+  .lv.now .side { color: var(--ink); }
+  .paused { text-align: center; padding: 22px 10px; border-radius: 12px; background: var(--storm-soft); color: var(--storm); }
+  .paused b { display: block; font-size: 15px; margin-bottom: 4px; }
+  .paused span { font-size: 13px; }
+
+  /* activity */
+  .ev { display: grid; grid-template-columns: 12px 120px 1fr auto; gap: 12px; align-items: center; padding: 10px 0;
+        border-bottom: 1px solid var(--line); font-size: 14px; }
+  .ev:last-child { border-bottom: 0; }
+  .ev .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .ev .dot.buy { background: var(--buy); } .ev .dot.sell { background: var(--sell); } .ev .dot.pause { background: var(--storm); }
+  .ev .dot.open { background: var(--brand); }
+  .ev .what { font-weight: 600; }
+  .ev .detail { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  footer { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--ink-2); font-size: 13px; margin-top: 8px; }
+  footer .upd { margin-left: auto; color: var(--muted); }
+
+  @media (max-width: 860px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .ev { grid-template-columns: 12px 1fr auto; }
+    .ev .detail { grid-column: 2 / 4; white-space: normal; }
+    .hire { grid-template-columns: 60px 1fr auto; }
+    .hire .when { display: none; }
+    footer .upd { margin-left: 0; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="logo">凪</div>
+  <div class="top">
+    <div class="mark">凪</div>
     <div>
-      <h1>Nagi · Grid Agent <span id="agent-id">#2623</span></h1>
-      <div class="sub">Trades the calm. Stands still in the storm. · BNB Smart Chain testnet</div>
+      <div class="title">Nagi <span class="tag" id="agent-id">· Grid agent #2623</span></div>
+      <div class="tag">Trades the calm. Stands still in the storm. · BNB Chain testnet</div>
     </div>
-    <div class="pills">
-      <span class="pill" id="live"><span class="dot off"></span>Connecting…</span>
-      <span class="pill" id="regime">Market: …</span>
-      <span class="pill mono" id="price">BNB …</span>
-    </div>
-  </header>
+    <div class="live" id="live"><i></i><span>Connecting</span></div>
+  </div>
 
-  <section class="card">
-    <h2>Hires</h2>
-    <div class="stats">
-      <div class="stat"><b id="h-total">–</b><span>total hires</span></div>
-      <div class="stat"><b id="h-running">–</b><span>in progress</span></div>
-      <div class="stat"><b id="h-done">–</b><span>completed</span></div>
+  <div class="kpis">
+    <div class="kpi">
+      <div class="label">Market <span class="help" tabindex="0" data-tip="Kaufman efficiency ratio over 10 hourly candles. Below 0.30 the market is going sideways (calm) and the grid trades. At 0.30 or above it is trending (storm) and Nagi stands still.">?</span></div>
+      <div class="value" id="k-market">…</div>
+      <div class="sub num" id="k-er">&nbsp;</div>
     </div>
-    <table>
-      <thead><tr><th>Job</th><th>Client</th><th>Budget</th><th>Status</th><th>When</th></tr></thead>
-      <tbody id="hires"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
-    </table>
-    <div class="note">Read straight from the ERC-8183 contract. A hire becomes <b>completed</b> after Nagi delivers its session report and the 15-minute dispute window passes.</div>
-  </section>
-
-  <section class="card">
-    <h2>Performance · grid vs just holding BNB</h2>
-    <div class="perf">
-      <div class="stat"><div class="big mono" id="p-total">–</div><span>profit vs holding</span></div>
-      <div class="stat"><b class="mono" id="p-real">–</b><span>locked in (round trips)</span></div>
-      <div class="stat"><b class="mono" id="p-open">–</b><span>open, at price now</span></div>
-      <div class="stat"><b id="p-trades">–</b><span>trades · round trips</span></div>
-      <div class="stat"><b class="mono" id="p-wallet">–</b><span>testnet wallet (live)</span></div>
+    <div class="kpi">
+      <div class="label">BNB price <span class="help" tabindex="0" data-tip="Real BNB/USDT price from Binance. Nagi decides on the real market and fills on the PancakeSwap testnet pool.">?</span></div>
+      <div class="value num" id="k-price">…</div>
+      <div class="sub" id="k-step">&nbsp;</div>
     </div>
-    <div class="note" id="p-note">Paper P&amp;L at real BNB prices; fills happen on BSC testnet.</div>
-  </section>
+    <div class="kpi">
+      <div class="label">Hires <span class="help" tabindex="0" data-tip="ERC-8183 jobs where Nagi is the provider, read straight from the contract. A hire is completed after Nagi delivers its session report and the 15-minute dispute window passes.">?</span></div>
+      <div class="value num" id="k-hires">…</div>
+      <div class="sub num" id="k-hires-sub">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Profit vs holding <span class="help" tabindex="0" data-tip="Paper P&amp;L at real BNB prices compared with simply holding BNB: locked-in round trips plus open trades marked to the current price. Each rung is 0.002 BNB, so amounts are small; watch the sign and the trend. Resets when the server restarts.">?</span></div>
+      <div class="value num" id="k-pnl">…</div>
+      <div class="sub num" id="k-pnl-sub">&nbsp;</div>
+    </div>
+  </div>
 
-  <div class="grid2">
+  <div class="row">
     <section class="card">
-      <h2>Grid</h2>
-      <div class="ladder" id="ladder"><div class="empty">No grid yet.</div></div>
-      <div class="note" id="grid-note"></div>
+      <h2>Hires <span class="count num" id="hires-count"></span></h2>
+      <div id="hires"><div class="empty"><span class="ico">⏳</span>Loading…</div></div>
     </section>
     <section class="card">
-      <h2>Recent decisions</h2>
-      <div id="events"><div class="empty">Loading…</div></div>
+      <h2>Grid <span class="help" tabindex="0" data-tip="Eight levels around the price when the grid opened, spaced 0.5 × ATR apart. Price falling through a level buys 0.002 BNB, rising through one sells.">?</span>
+        <span class="count num" id="grid-step"></span></h2>
+      <div id="ladder"><div class="empty"><span class="ico">⏳</span>Loading…</div></div>
     </section>
   </div>
+
+  <section class="card">
+    <h2>Activity <span class="count num" id="wallet"></span></h2>
+    <div id="events"><div class="empty"><span class="ico">⏳</span>Loading…</div></div>
+  </section>
 
   <footer>
     <span>Owner <a class="mono" id="owner" target="_blank" rel="noopener" href="#">…</a></span>
     <a target="_blank" rel="noopener" href="https://testnet.8004scan.io">ERC-8004 identity</a>
-    <a target="_blank" rel="noopener" href="https://github.com/salmon-tech404/nagi-grid-agent">Source on GitHub</a>
     <a target="_blank" rel="noopener" href="/.well-known/agent-card.json">Agent card</a>
+    <a target="_blank" rel="noopener" href="https://github.com/salmon-tech404/nagi-grid-agent">Source</a>
     <a target="_blank" rel="noopener" href="https://pokter.xyz">Hire on Pokter</a>
-    <span id="updated"></span>
+    <span class="upd" id="updated"></span>
   </footer>
 </div>
 
@@ -138,101 +185,100 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const short = (a) => a ? a.slice(0, 6) + "…" + a.slice(-4) : "";
 const scan = (path) => "https://testnet.bscscan.com/" + path;
-const ago = (ts) => {
-  if (!ts) return "";
-  const s = Math.round(Date.now() / 1000 - ts);
-  if (s < 0) return "in " + fmtDur(-s);
-  return fmtDur(s) + " ago";
-};
-const fmtDur = (s) => s < 60 ? s + "s" : s < 3600 ? Math.round(s / 60) + "m" : s < 86400 ? Math.round(s / 3600) + "h" : Math.round(s / 86400) + "d";
-const STATUS = { FUNDED: "Running", SUBMITTED: "Delivered · in review", COMPLETED: "Completed", REJECTED: "Rejected", EXPIRED: "Expired", OPEN: "Not funded" };
+const dur = (s) => s < 60 ? s + "s" : s < 3600 ? Math.round(s / 60) + "m" : s < 86400 ? Math.round(s / 3600) + "h" : Math.round(s / 86400) + "d";
+const ago = (ts) => { if (!ts) return ""; const s = Math.round(Date.now() / 1000 - ts); return s < 0 ? "in " + dur(-s) : dur(s) + " ago"; };
+const usd = (v) => (+v >= 0 ? "+$" : "−$") + Math.abs(+v).toFixed(+v !== 0 && Math.abs(+v) < 0.01 ? 4 : 2);
+const STATUS = { FUNDED: ["Running", "run"], SUBMITTED: ["In review", "run"], COMPLETED: ["Completed", "done"],
+                 REJECTED: ["Rejected", "bad"], EXPIRED: ["Expired", "bad"], OPEN: ["Not funded", ""] };
+const LABEL = { "grid-open": "Grid opened", "grid-stop": "Grid reset", pause: "Paused", "session-standby": "Hired · standing by",
+                "session-read-only": "Hired · read-only", skip: "Skipped", error: "Error" };
+
+function renderKpis(act, perf, hires) {
+  const state = act.state;
+  const er = (act.events.find((e) => e.er !== undefined) || {}).er;
+  $("k-market").innerHTML = state === "calm" ? '<span class="calm-c">Calm</span>'
+                          : state === "storm" ? '<span class="storm-c">Storm</span>' : "Waiting";
+  $("k-er").textContent = er !== undefined ? `ER ${(+er).toFixed(2)} · ${state === "storm" ? "standing still" : "grid active"}` : "first check pending";
+  $("k-price").textContent = perf.price_now ? "$" + (+perf.price_now).toFixed(2) : "…";
+  $("k-step").textContent = act.grid ? `levels every $${(+act.grid.step).toFixed(2)}` : "grid paused";
+  $("k-hires").textContent = hires.total;
+  $("k-hires-sub").textContent = `${hires.running} running · ${hires.completed} completed`;
+  const p = $("k-pnl");
+  p.textContent = usd(perf.vs_hold_usd);
+  p.className = "value num " + (+perf.vs_hold_usd > 0 ? "pos" : +perf.vs_hold_usd < 0 ? "neg" : "");
+  $("k-pnl-sub").textContent = `${perf.trades} trades · ${perf.round_trips} round trips`;
+  const w = perf.wallet || {};
+  $("wallet").textContent = w.tbnb == null ? "" : `wallet ${(+w.tbnb).toFixed(4)} tBNB · ${(+w.busd).toFixed(2)} BUSD`;
+}
 
 function renderHires(h) {
-  $("h-total").textContent = h.total;
-  $("h-running").textContent = h.running;
-  $("h-done").textContent = h.completed;
+  $("hires-count").textContent = h.total ? `${h.total} total` : "";
   if (!h.jobs.length) {
-    $("hires").innerHTML = `<tr><td colspan="5" class="empty">No hires yet${h.scanned_jobs ? ` (scanned ${h.scanned_jobs} jobs)` : ""}.</td></tr>`;
+    $("hires").innerHTML = '<div class="empty"><span class="ico">🤝</span>No hires yet. Nagi is listed and ready to take a grid session.</div>';
     return;
   }
   $("hires").innerHTML = h.jobs.map((j) => {
-    let when = j.status === "FUNDED" && j.session_end ? "session ends " + ago(j.session_end)
-             : j.submitted_at ? "delivered " + ago(j.submitted_at) : "expires " + ago(j.expired_at);
-    return `<tr>
-      <td class="mono">#${j.job_id}</td>
-      <td class="mono"><a target="_blank" rel="noopener" href="${scan("address/" + esc(j.client))}">${esc(short(j.client))}</a></td>
-      <td>${(+j.budget_u).toFixed(2)} U</td>
-      <td><span class="badge ${esc(j.status)}">${esc(STATUS[j.status] || j.status)}</span></td>
-      <td>${esc(when)}</td></tr>`;
+    const [label, cls] = STATUS[j.status] || [j.status, ""];
+    const when = j.status === "FUNDED" && j.session_end ? "ends " + ago(j.session_end)
+               : j.submitted_at ? "delivered " + ago(j.submitted_at) : "";
+    return `<div class="hire">
+      <span class="num">#${j.job_id}</span>
+      <a class="mono" target="_blank" rel="noopener" href="${scan("address/" + esc(j.client))}">${esc(short(j.client))}</a>
+      <span class="status ${cls}">${esc(label)}</span>
+      <span class="when num">${(+j.budget_u).toFixed(2)} U${when ? " · " + esc(when) : ""}</span></div>`;
   }).join("");
 }
 
-function renderActivity(a) {
-  const ev = a.events || [];
-  const lastPrice = (ev.find((e) => e.price_ref) || {}).price_ref;
-  const lastEr = (ev.find((e) => e.er !== undefined) || {}).er;
-  if (lastPrice) $("price").textContent = "BNB $" + (+lastPrice).toFixed(2);
-  const r = $("regime");
-  if (a.state === "calm") { r.className = "pill calm"; r.textContent = `🌊 Calm · grid active${lastEr !== undefined ? " · ER " + (+lastEr).toFixed(2) : ""}`; }
-  else if (a.state === "storm") { r.className = "pill storm"; r.textContent = `⛈ Storm · standing still${lastEr !== undefined ? " · ER " + (+lastEr).toFixed(2) : ""}`; }
-  else { r.className = "pill"; r.textContent = "Market: waiting for first tick"; }
-
-  if (a.grid) {
-    const rows = [...a.grid.levels].sort((x, y) => y - x).map((lv) => ({ lv, side: lv > a.grid.center ? "sell" : "buy" }));
-    if (lastPrice) rows.push({ lv: +lastPrice, side: "now" });
-    rows.sort((x, y) => y.lv - x.lv);
-    $("ladder").innerHTML = rows.map((r) => r.side === "now"
-      ? `<div class="now"><span>◀ price now</span><span class="mono">${r.lv.toFixed(2)}</span></div>`
-      : `<div class="${r.side}"><span>${r.side}</span><span class="mono">${r.lv.toFixed(2)}</span></div>`).join("");
-    $("grid-note").textContent = `Step $${(+a.grid.step).toFixed(2)} (0.5 × ATR). Price crossing a level down buys, up sells.`;
-  } else {
-    $("ladder").innerHTML = `<div class="empty">${a.state === "storm" ? "Grid paused while the market trends." : "No grid yet."}</div>`;
-    $("grid-note").textContent = "";
+function renderGrid(act, price) {
+  if (!act.grid) {
+    $("grid-step").textContent = "";
+    $("ladder").innerHTML = act.state === "storm"
+      ? '<div class="paused"><b>Standing still</b><span>The market is trending. The grid reopens when it calms.</span></div>'
+      : '<div class="empty"><span class="ico">⏳</span>Waiting for the first market check.</div>';
+    return;
   }
+  $("grid-step").textContent = `step $${(+act.grid.step).toFixed(2)}`;
+  const rows = act.grid.levels.map((lv) => ({ lv, side: lv > act.grid.center ? "sell" : "buy" }));
+  if (price) rows.push({ lv: +price, side: "now" });
+  rows.sort((a, b) => b.lv - a.lv);
+  $("ladder").innerHTML = '<div class="ladder">' + rows.map((r) =>
+    `<div class="lv ${r.side}"><span class="side">${{ now: "Price now", sell: "Sell", buy: "Buy" }[r.side]}</span><span class="num">$${r.lv.toFixed(2)}</span></div>`
+  ).join("") + "</div>";
+}
 
-  if (!ev.length) { $("events").innerHTML = `<div class="empty">No decisions yet${a.loops ? "" : " (loops are off on this instance)"}.</div>`; return; }
-  $("events").innerHTML = ev.slice(0, 12).map((e) => {
-    const label = e.kind === "trade" ? e.action : e.kind;
-    const cls = e.kind === "trade" ? e.action : (e.kind === "pause" || e.kind === "session-standby") ? "pause" : "";
-    const what = e.kind === "trade"
-      ? `@ ${(+e.level).toFixed(2)}${e.job_id ? ` · job #${e.job_id}` : ""} · <a target="_blank" rel="noopener" href="${scan("tx/" + esc(e.tx))}">BscScan</a>`
+function renderEvents(act) {
+  const ev = act.events || [];
+  if (!ev.length) {
+    $("events").innerHTML = `<div class="empty"><span class="ico">🌊</span>No decisions yet${act.loops ? "" : " (automation is off on this instance)"}.</div>`;
+    return;
+  }
+  $("events").innerHTML = ev.slice(0, 10).map((e) => {
+    const trade = e.kind === "trade";
+    const what = trade ? (e.action === "buy" ? "Bought" : "Sold") : (LABEL[e.kind] || e.kind);
+    const dot = trade ? e.action : e.kind === "grid-open" ? "open" : ["pause", "session-standby", "error"].includes(e.kind) ? "pause" : "";
+    const qty = trade && e.amount_bnb_wei ? (e.amount_bnb_wei / 1e18).toFixed(3) + " BNB · " : "";
+    const detail = trade
+      ? `${qty}level $${(+e.level).toFixed(2)}${e.job_id ? " · job #" + e.job_id : ""} · <a target="_blank" rel="noopener" href="${scan("tx/" + esc(e.tx))}">view tx</a>`
       : esc(e.note || e.reason || "");
-    return `<div class="ev"><span class="t">${esc(ago(e.ts))}</span><span class="k ${cls}">${esc(label)}</span><span>${what}</span></div>`;
+    return `<div class="ev"><span class="dot ${dot}"></span><span class="what">${esc(what)}</span>
+      <span class="detail">${detail}</span><span class="when num">${esc(ago(e.ts))}</span></div>`;
   }).join("");
-}
-
-const usd = (v) => (v >= 0 ? "+$" : "−$") + Math.abs(+v).toFixed(4);
-function setMoney(id, v) {
-  const el = $(id);
-  el.textContent = usd(v);
-  el.classList.remove("pos", "neg");
-  if (+v > 0) el.classList.add("pos"); else if (+v < 0) el.classList.add("neg");
-}
-function renderPerf(p) {
-  setMoney("p-total", p.vs_hold_usd);
-  setMoney("p-real", p.realized_usd);
-  setMoney("p-open", p.unrealized_usd);
-  $("p-trades").textContent = `${p.trades} · ${p.round_trips}`;
-  const w = p.wallet || {};
-  $("p-wallet").textContent = w.tbnb == null ? "…" : `${(+w.tbnb).toFixed(4)} tBNB · ${(+w.busd).toFixed(2)} BUSD`;
-  $("p-note").textContent = `Paper P&L at real BNB prices vs simply holding BNB, since ${new Date(p.since * 1000).toLocaleString()} `
-    + `(resets when the server restarts). Each rung is 0.002 BNB, so amounts are small; watch the sign and the trend. `
-    + `Fills happen on BSC testnet; the wallet line is live from chain.`;
 }
 
 async function load() {
   try {
-    const [api, hires, act, perf] = await Promise.all(["/api", "/hires", "/activity?limit=50", "/performance"].map((u) => fetch(u).then((r) => r.json())));
-    renderPerf(perf);
-    $("live").innerHTML = '<span class="dot"></span>Live';
-    $("agent-id").textContent = "#" + api.agent_id;
-    $("owner").textContent = short(api.owner);
-    $("owner").href = scan("address/" + api.owner);
+    const [api, hires, act, perf] = await Promise.all(
+      ["/api", "/hires", "/activity?limit=50", "/performance"].map((u) => fetch(u).then((r) => r.json())));
+    $("live").className = "live on"; $("live").lastElementChild.textContent = "Live";
+    $("agent-id").textContent = "· Grid agent #" + api.agent_id;
+    $("owner").textContent = short(api.owner); $("owner").href = scan("address/" + api.owner);
+    renderKpis(act, perf, hires);
     renderHires(hires);
-    renderActivity(act);
-    $("updated").textContent = "Updated " + new Date().toLocaleTimeString() + " · refreshes every 30s";
+    renderGrid(act, perf.price_now);
+    renderEvents(act);
+    $("updated").textContent = "Updated " + new Date().toLocaleTimeString();
   } catch (err) {
-    $("live").innerHTML = '<span class="dot off"></span>Offline';
+    $("live").className = "live"; $("live").lastElementChild.textContent = "Offline";
   }
 }
 load();

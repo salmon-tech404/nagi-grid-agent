@@ -31,6 +31,11 @@ def test_open_lots_are_marked_to_current_price():
     assert p["open_bnb"] == pytest.approx(-0.006)
 
 
+def test_partial_close_of_a_bigger_lot_counts_as_a_round_trip():
+    p = grid_pnl([t(1, "sell", 728.73, wei=8 * 10**15), t(2, "buy", 725.5)], price_now=729.0)
+    assert p["round_trips"] == 1 and p["realized_usd"] == pytest.approx((728.73 - 725.5) * 0.002)
+
+
 def test_ignores_non_trades_and_handles_no_price():
     p = grid_pnl([{"kind": "grid-open", "ts": 1}, t(2, "buy", 700.0)], price_now=None)
     assert p["trades"] == 1 and p["unrealized_usd"] == 0

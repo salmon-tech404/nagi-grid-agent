@@ -30,11 +30,11 @@ def grid_pnl(events: list[dict[str, Any]], price_now: float | None) -> dict[str,
             take = min(qty, lot[1])
             sell_px, buy_px = (lot[0], price) if side == "buy" else (price, lot[0])
             realized += (sell_px - buy_px) * take
+            round_trips += 1  # every close counts, including a partial close of a bigger lot
             lot[1] -= take
             qty -= take
             if lot[1] <= 1e-12:
                 other.popleft()
-                round_trips += 1
         if qty > 1e-12:
             open_lots[side].append([price, qty])
 
