@@ -75,7 +75,11 @@ if not _private_key or not _wallet_password:
     raise SystemExit("PRIVATE_KEY and WALLET_PASSWORD are required (see .env.example)")
 wallet = EVMWalletProvider(password=_wallet_password, private_key=_private_key, persist=False)
 
-client = ERC8183Client(wallet_provider=wallet, network=NETWORK)
+# Self-pay gas for job writes (submit, settle). The MegaFuel paymaster accepted sponsored submits and
+# then dropped them unmined, so deliveries hung for 300 s and retried forever. Gas is ~0.00002 tBNB per tx.
+client = ERC8183Client(
+    wallet_provider=wallet, network=dataclasses.replace(resolve_network(NETWORK), use_paymaster=False)
+)
 
 # Bind the quote signature to this chain + commerce contract (anti-replay).
 negotiation_handler = NegotiationHandler(
