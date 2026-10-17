@@ -200,13 +200,12 @@ async def lifespan(_: FastAPI):
     global desk
     tasks: list[asyncio.Task] = [asyncio.create_task(_hires_loop())]
     if RUN_LOOPS:
+        storage = IPFSStorageProvider.from_env()  # Render's disk is wiped on restart
         ops = ERC8183JobOps(
-            wallet, NETWORK,
-            storage_provider=IPFSStorageProvider.from_env(),  # Render's disk is wiped on restart
-            service_price=int(SERVICE_PRICE),
-            agent_url=f"{BASE_URL}/erc8183",
+            wallet, NETWORK, storage_provider=storage, service_price=int(SERVICE_PRICE), agent_url=f"{BASE_URL}/erc8183",
         )
-        desk = JobDesk(ops, client, engine, chain_lock, session_seconds=SESSION_SECONDS, market_symbol=MARKET_SYMBOL)
+        desk = JobDesk(ops, client, engine, chain_lock, session_seconds=SESSION_SECONDS, market_symbol=MARKET_SYMBOL,
+                       storage=storage, provider=wallet.address, service_price=int(SERVICE_PRICE))
         tasks += [
             asyncio.create_task(_grid_loop()),
             asyncio.create_task(funded_job_watcher(ops, desk.on_funded, interval=30)),

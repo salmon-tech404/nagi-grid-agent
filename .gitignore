@@ -10,6 +10,7 @@ keystore/
 PLAN.md
 TASKS.md
 NOTES.md
+HIRE_GUIDE.md
 
 # Agent runtime data (deliverables, local storage)
 .agent-data/

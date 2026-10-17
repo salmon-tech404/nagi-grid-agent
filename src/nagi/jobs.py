@@ -17,7 +17,10 @@ import re
 import time
 from typing import Any
 
+from bnbagent.erc8183.schema import SCHEMA_VERSION, DeliverableManifest
+
 from nagi.market import fetch_klines
+from nagi.plan import grid_plan
 
 logger = logging.getLogger("nagi.jobs")
 
@@ -98,13 +101,45 @@ class HireBook:
         }
 
 
-def brief_task(description: str) -> str:
-    """The human request inside a job's anchored description (JSON from the SDK, or plain text)."""
+def _task_doc(description: str) -> dict[str, Any]:
+    """The task object inside a job description. Pokter's "pokter-job" format nests the task as a JSON string."""
     try:
         doc = json.loads(description)
-        return str(doc.get("task") or doc.get("task_description") or "")[:240]
-    except (ValueError, AttributeError):
-        return description[:240]
+    except (ValueError, TypeError):
+        return {"task": description}
+    if not isinstance(doc, dict):
+        return {"task": description}
+    task = doc.get("task") or doc.get("task_description") or ""
+    if isinstance(task, str):
+        try:
+            inner = json.loads(task)
+            if isinstance(inner, dict):
+                return inner
+        except ValueError:
+            pass
+    return {"task": task, "terms": doc.get("terms")}
+
+
+def brief_task(description: str) -> str:
+    """The human request inside a job's anchored description (SDK JSON, Pokter JSON, or plain text)."""
+    return str(_task_doc(description).get("task") or "")[:240]
+
+
+def grid_plan_request(description: str) -> dict[str, Any] | None:
+    """Structured grid-plan request (Pokter's grid-arithmetic suite), or None for a normal hire."""
+    data = _task_doc(description).get("data")
+    if not isinstance(data, dict):
+        return None
+    rng = data.get("range") or {}
+    try:
+        return {
+            "base": str(data.get("base") or "BNB"),
+            "budget": float(data.get("budget_usdt") or data["budget"]),
+            "lower": float(rng["lower"]), "upper": float(rng["upper"]),
+            "grids": int(data["grids"]), "spacing": str(data.get("spacing") or "geometric"),
+        }
+    except (KeyError, TypeError, ValueError):
+        return None
 
 
 def _gateway(url: str | None) -> str | None:
@@ -115,8 +150,11 @@ def _gateway(url: str | None) -> str | None:
 
 class JobDesk:
     def __init__(self, ops, client, engine, chain_lock: asyncio.Lock, session_seconds: int = 3600,
-                 market_symbol: str = "BNBUSDT"):
+                 market_symbol: str = "BNBUSDT", storage=None, provider: str | None = None, service_price: int = 0):
         self.ops = ops
+        self.storage = storage
+        self.provider = provider
+        self.service_price = service_price
         self.client = client
         self.engine = engine
         self.lock = chain_lock
@@ -135,6 +173,13 @@ class JobDesk:
         if job_id in self.sessions:
             return None
         now = int(time.time())
+        plan_request = grid_plan_request(job.get("description", ""))
+        if plan_request is not None:
+            # A pure calculation (e.g. Pokter's grid-arithmetic check): answer at once, no trading session.
+            self.sessions[job_id] = {"kind": "plan", "start": now, "end": now, "client": job.get("client"),
+                                     "request": plan_request, "submitted": False}
+            logger.info("job %s: grid-plan request %s", job_id, plan_request)
+            return None
         submit_by = int(job["expiredAt"]) - await self.dispute_window() - SUBMIT_MARGIN
         end = min(now + self.session_seconds, submit_by)
         if end <= now + 60:
@@ -151,6 +196,9 @@ class JobDesk:
 
     def report(self, job_id: int) -> dict[str, Any]:
         s = self.sessions[job_id]
+        if s.get("kind") == "plan":
+            r = s["request"]
+            return grid_plan(r["base"], r["budget"], r["lower"], r["upper"], r["grids"], r["spacing"])
         events = self.engine.events_between(s["start"], s["end"])
         trades = [e for e in events if e["kind"] == "trade"]
         return {
@@ -171,16 +219,53 @@ class JobDesk:
         for job_id, s in list(self.sessions.items()):
             if s["submitted"] or s["end"] > now:
                 continue
-            body = json.dumps(self.report(job_id), separators=(",", ":"))
-            async with self.lock:
-                res = await self.ops.submit_result(job_id, body, metadata={"agent": "Nagi", "kind": "grid-session"})
+            kind = "grid-plan" if s.get("kind") == "plan" else "grid-session"
+            try:
+                body = json.dumps(self.report(job_id), separators=(",", ":"))
+                res = await self.deliver(job_id, body, {"agent": "Nagi", "kind": kind})
+            except Exception as exc:
+                res = {"success": False, "error": str(exc), "permanent": False}
             if res.get("success"):
                 s["submitted"] = True
-                logger.info("job %s: report submitted %s", job_id, res.get("txHash") or res.get("transactionHash"))
+                logger.info("job %s: %s delivered, tx %s, %s", job_id, kind, res["txHash"], res["deliverableUrl"])
             else:
-                logger.error("job %s: submit failed: %s", job_id, res.get("error"))
-                if not res.get("retryable"):
-                    s["submitted"] = True  # e.g. deadline passed: stop retrying
+                logger.error("job %s: delivery failed: %s", job_id, res.get("error"))
+                if res.get("permanent"):
+                    s["submitted"] = True  # wrong status, not ours, or past the submit deadline: stop retrying
+
+    async def check_job(self, job_id: int) -> str | None:
+        """Our own pre-submit checks. The SDK's verify_job rejects job descriptions it did not
+        negotiate itself (e.g. Pokter's "pokter-job" format), so it cannot gate delivery here."""
+        job = await asyncio.to_thread(self.client.get_job, job_id)
+        if job.status.name != "FUNDED":
+            return f"status is {job.status.name}, expected FUNDED"
+        if self.provider and job.provider.lower() != self.provider.lower():
+            return "this agent is not the job's provider"
+        if int(time.time()) > job.expired_at - await self.dispute_window():
+            return "submit deadline (expiredAt - disputeWindow) has passed"
+        if job.budget < self.service_price:
+            return f"budget {job.budget} is below the service price {self.service_price}"
+        token = await asyncio.to_thread(self.client.job_payment_token, job_id)
+        if token.lower() != (await asyncio.to_thread(lambda: self.client.payment_token)).lower():
+            return "job is paid in an unexpected token"
+        return None
+
+    async def deliver(self, job_id: int, content: str, metadata: dict[str, Any]) -> dict[str, Any]:
+        """Upload a deliverable manifest and submit its hash onchain (same manifest format as the SDK)."""
+        problem = await self.check_job(job_id)
+        if problem:
+            return {"success": False, "error": problem, "permanent": True}
+        c = self.client
+        manifest = DeliverableManifest(
+            version=SCHEMA_VERSION, job_id=job_id, chain_id=await asyncio.to_thread(lambda: c.commerce.w3.eth.chain_id),
+            contracts={"commerce": c.commerce.address, "router": c.router.address, "policy": c.policy.address},
+            response={"content": content, "content_type": "application/json"}, metadata=metadata,
+        )
+        url = await self.storage.upload(manifest.to_dict(), f"nagi-job-{job_id}.json")
+        public_url = _gateway(url)  # https gateway link: any client or voter can fetch it
+        async with self.lock:
+            tx = await asyncio.to_thread(c.submit, job_id, manifest.manifest_hash(), {"deliverable_url": public_url})
+        return {"success": True, "txHash": tx["transactionHash"], "deliverableUrl": public_url}
 
     async def settle_due(self) -> None:
         res = await self.ops.get_submitted_jobs()
