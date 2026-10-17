@@ -13,6 +13,7 @@ node that serves them in bounded block ranges. Synchronous: run it in a thread.
 from __future__ import annotations
 
 import logging
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -24,7 +25,11 @@ from nagi.executor import BUSD, ROUTER, ROUTER_ABI, WBNB
 
 logger = logging.getLogger("nagi.history")
 
-LOGS_RPC = "https://bsc-testnet-rpc.publicnode.com"
+import os
+
+# PublicNode serves eth_getLogs but only for roughly the last two days; older ranges come back empty.
+# Set LOGS_RPC_URL to an archive endpoint (e.g. your own free NodeReal BSC testnet key) for full history.
+LOGS_RPC = os.getenv("LOGS_RPC_URL") or "https://bsc-testnet-rpc.publicnode.com"
 START_BLOCK = 136_935_000  # just before Nagi's first swap (15 Oct 2026)
 TRANSFER = "0x" + Web3.keccak(text="Transfer(address,address,uint256)").hex().removeprefix("0x")
 KLINE_URL = "https://data-api.binance.vision/api/v3/klines"
@@ -64,11 +69,19 @@ class ChainHistory:
         self.token = Web3.to_checksum_address(payment_token)
         self.next_block = start_block
         self.chunk = chunk
+        self.start_block = start_block
+        self.rescan_every = 6 * 3600
+        self._last_full_scan = 0.0
         self.trades: dict[str, dict[str, Any]] = {}
         self.earnings: dict[str, dict[str, Any]] = {}
         self._ts_cache: dict[int, int] = {}
 
     def refresh(self) -> None:
+        # Public nodes occasionally return an empty log list for a range that does hold logs, which
+        # would hide a trade forever. Re-walk the whole history now and then; known txs are skipped.
+        if time.time() - self._last_full_scan > self.rescan_every:
+            self.next_block = self.start_block
+            self._last_full_scan = time.time()
         head = self.w3.eth.block_number
         while self.next_block <= head:
             end = min(self.next_block + self.chunk - 1, head)
@@ -83,6 +96,8 @@ class ChainHistory:
                 self._add_trade(log, "buy")
             for log in paid:
                 tx = "0x" + log["transactionHash"].hex().removeprefix("0x")
+                if tx in self.earnings:
+                    continue
                 self.earnings[tx] = {"tx": tx, "amount_u": int(log["data"].hex() or "0", 16) / 1e18,
                                      "ts": self._block_ts(log["blockNumber"])}
             self.next_block = end + 1

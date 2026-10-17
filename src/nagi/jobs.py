@@ -43,6 +43,12 @@ def terms_forbid_trading(description: str) -> bool:
 
 FINAL = ("COMPLETED", "REJECTED", "EXPIRED")
 
+# Marketplace wallets that hire agents to test them. Their jobs are real work, but Set and Earn only counts
+# hires from independent wallets, so they never count toward the campaign target.
+CHECKER_WALLETS = {
+    "0x93847647d7eb72a69e162117df6a8697df53edda": "Pokter correctness check",
+}
+
 
 class HireBook:
     """Every ERC-8183 job whose provider is Nagi, read from chain, so it survives restarts.
@@ -84,12 +90,14 @@ class HireBook:
             "job_id": job.id, "client": job.client, "budget_u": job.budget / 1e18,
             "status": job.status.name, "expired_at": job.expired_at, "submitted_at": job.submitted_at,
             "task": brief_task(job.description or ""), "read_only": terms_forbid_trading(job.description or ""),
+            "checker": CHECKER_WALLETS.get(job.client.lower()),
         }
 
     def summary(self) -> dict[str, Any]:
         jobs = sorted(self.jobs.values(), key=lambda j: j["job_id"], reverse=True)
-        outside = {j["client"].lower() for j in jobs if j["client"].lower() != self.me}
-        completed_outside = {j["client"].lower() for j in jobs if j["status"] == "COMPLETED" and j["client"].lower() != self.me}
+        independent = [j for j in jobs if j["client"].lower() != self.me and j["client"].lower() not in CHECKER_WALLETS]
+        outside = {j["client"].lower() for j in independent}
+        completed_outside = {j["client"].lower() for j in independent if j["status"] == "COMPLETED"}
         return {
             "total": len(jobs),
             "running": sum(j["status"] in ("FUNDED", "SUBMITTED") for j in jobs),

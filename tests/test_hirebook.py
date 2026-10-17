@@ -61,6 +61,16 @@ def test_summary_counts_distinct_outside_clients_and_pending_budget():
     assert s["pending_u"] == 0.1
 
 
+def test_marketplace_checker_jobs_never_count_as_independent_clients():
+    checker = "0x93847647d7eb72a69E162117df6a8697dF53EDda"
+    c = FakeCommerce([Job(1, NAGI, Status.COMPLETED, client=checker), Job(2, NAGI, Status.COMPLETED, client="0xAAA")])
+    book = HireBook(c, NAGI)
+    book.refresh()
+    s = book.summary()
+    assert (s["total"], s["completed"], s["clients"], s["completed_clients"]) == (2, 2, 1, 1)
+    assert book.jobs[1]["checker"] == "Pokter correctness check" and book.jobs[2]["checker"] is None
+
+
 def test_task_text_comes_from_the_anchored_brief():
     import json
     c = FakeCommerce([Job(1, NAGI, Status.FUNDED, description=json.dumps({"task": "Run one grid session"}))])

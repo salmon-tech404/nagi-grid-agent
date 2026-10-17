@@ -313,7 +313,7 @@ function renderHires(d) {
     const report = j.report_url ? `<a target="_blank" rel="noopener" href="${esc(j.report_url)}">Report</a>` : "";
     return `<div class="item">
       <div class="line"><span class="strong">Job #${j.job_id}</span><span class="chip ${cls}"><i></i>${esc(label)}</span>
-        ${j.read_only ? '<span class="chip">Read-only</span>' : ""}<span class="end sm ink-2">${(+j.budget_u).toFixed(2)} U</span></div>
+        ${j.read_only ? '<span class="chip">Read-only</span>' : ""}${j.checker ? `<span class="chip">${esc(j.checker)}</span>` : ""}<span class="end sm ink-2">${(+j.budget_u).toFixed(2)} U</span></div>
       ${j.task ? `<div class="sm ink-2">“${esc(j.task)}”</div>` : ""}
       <div class="line xs muted"><span>by <a class="mono" target="_blank" rel="noopener" href="${scan("address/" + esc(j.client))}">${esc(short(j.client))}</a></span>
         ${when ? `<span>${esc(when)}</span>` : ""}${report ? `<span>${report}</span>` : ""}</div></div>`;

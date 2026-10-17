@@ -292,9 +292,6 @@ async def overview():
             session = desk.sessions.get(j["job_id"])
             if session:
                 j["session_end"] = session["end"]
-    delivered = [j for j in hires["jobs"] if j["submitted_at"]]
-    action_days = set(history.active_days()) | {
-        time.strftime("%Y-%m-%d", time.gmtime(j["submitted_at"])) for j in delivered}
     decisions = [e for e in reversed(engine.log) if e["kind"] != "trade"][:20]
     return {
         "agent": {"name": AGENT_NAME, "id": AGENT_ID, "owner": wallet.address, "category": CATEGORY,
@@ -313,8 +310,9 @@ async def overview():
                      "payouts": sorted(history.earnings.values(), key=lambda e: e["ts"], reverse=True)},
         "progress": {
             "hires": {"value": hires["completed_clients"], "target": 3},
-            "actions": {"value": len(trades) + len(delivered), "target": 5},
-            "days": {"value": len(action_days), "target": 3},
+            # Grid agents qualify by trading repeatedly, so only swaps count; deliveries are shown separately.
+            "actions": {"value": len(trades), "target": 5},
+            "days": {"value": len(history.active_days()), "target": 3},
             "deadline": DEADLINE,
         },
         "performance": grid_pnl(trades, price_now),
