@@ -25,7 +25,9 @@ from typing import Any
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
+import httpx
+import re
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
@@ -37,7 +39,7 @@ from bnbagent.utils import RateLimitExceeded, SlidingWindowLimiter  # noqa: E402
 from nagi import regime  # noqa: E402
 from nagi.engine import GridEngine  # noqa: E402
 from nagi.executor import Executor  # noqa: E402
-from nagi.jobs import HireBook, JobDesk  # noqa: E402
+from nagi.jobs import HireBook, JobDesk, canonical_manifest_bytes  # noqa: E402
 from nagi.market import fetch_klines  # noqa: E402
 from nagi.perf import grid_pnl  # noqa: E402
 from nagi.history import LOGS_RPC, ChainHistory  # noqa: E402
@@ -97,7 +99,12 @@ POKTER_URL = os.getenv("POKTER_URL", f"https://pokter.xyz/agents/97/{AGENT_ID}")
 DEADLINE = 1793880000  # Set and Earn closes 2026-11-05 12:00 UTC
 LOW_GAS_BNB = 0.06
 # Read-only client on a node that serves eth_getLogs (the default testnet RPC refuses them).
-reader = ERC8183Client(None, dataclasses.replace(resolve_network(NETWORK), rpc_url=LOGS_RPC))
+# Optional: if that node is rate-limited at boot, the agent must still start; report links just wait.
+try:
+    reader = ERC8183Client(None, dataclasses.replace(resolve_network(NETWORK), rpc_url=LOGS_RPC))
+except Exception as exc:
+    logger.warning("logs RPC unavailable at startup (%s); report links disabled until restart", type(exc).__name__)
+    reader = None
 hirebook = HireBook(client.commerce, wallet.address, reader=reader)  # read-only, safe to run anywhere
 history = ChainHistory(wallet.address, client.commerce.address, client.payment_token)
 desk: JobDesk | None = None
@@ -209,7 +216,7 @@ async def lifespan(_: FastAPI):
             wallet, NETWORK, storage_provider=storage, service_price=int(SERVICE_PRICE), agent_url=f"{BASE_URL}/erc8183",
         )
         desk = JobDesk(ops, client, engine, chain_lock, session_seconds=SESSION_SECONDS, market_symbol=MARKET_SYMBOL,
-                       storage=storage, provider=wallet.address, service_price=int(SERVICE_PRICE))
+                       storage=storage, provider=wallet.address, service_price=int(SERVICE_PRICE), public_base=BASE_URL)
         tasks += [
             asyncio.create_task(_grid_loop()),
             asyncio.create_task(funded_job_watcher(ops, desk.on_funded, interval=30)),
@@ -234,6 +241,31 @@ async def agent_card():
 @app.api_route("/", methods=["GET", "HEAD"])
 async def dashboard():
     return FileResponse(DASHBOARD, media_type="text/html")
+
+
+CID_RE = re.compile(r"^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[a-z2-7]{50,64})$")
+_deliverables: dict[str, bytes] = {}
+
+
+@app.api_route("/deliverables/{cid}", methods=["GET", "HEAD"])
+async def deliverable(cid: str):
+    """A job deliverable in the exact canonical bytes whose keccak256 was committed on chain.
+
+    The manifest lives on IPFS; the gateway's copy has a different key order, so verifiers that
+    hash the fetched file would see a mismatch. Re-serialising here restores the committed bytes.
+    """
+    if not CID_RE.match(cid):
+        return JSONResponse({"error": "not a CID"}, status_code=400)
+    if cid not in _deliverables:
+        try:
+            async with httpx.AsyncClient(timeout=30, follow_redirects=True) as http:
+                r = await http.get(f"https://gateway.pinata.cloud/ipfs/{cid}")
+                r.raise_for_status()
+            _deliverables[cid] = canonical_manifest_bytes(r.json())
+        except Exception as exc:
+            logger.warning("deliverable %s unavailable: %s", cid, type(exc).__name__)
+            return JSONResponse({"error": "deliverable unavailable, retry shortly"}, status_code=503)
+    return Response(content=_deliverables[cid], media_type="application/json")
 
 
 @app.api_route("/logo.png", methods=["GET", "HEAD"])

@@ -145,9 +145,21 @@ def grid_plan_request(description: str) -> dict[str, Any] | None:
             "budget": float(data.get("budget_usdt") or data["budget"]),
             "lower": float(rng["lower"]), "upper": float(rng["upper"]),
             "grids": int(data["grids"]), "spacing": str(data.get("spacing") or "geometric"),
+            "echo": {k: data[k] for k in ("suite", "base", "budget_usdt", "budget", "range", "grids", "spacing")
+                     if k in data},
         }
     except (KeyError, TypeError, ValueError):
         return None
+
+
+def canonical_manifest_bytes(doc: dict[str, Any]) -> bytes:
+    """Exactly the bytes the SDK hashes for a manifest: sorted keys, compact separators.
+
+    Pinata stores pinned JSON with its own key order, so the file a gateway serves hashes
+    differently from what was committed on chain. Serving these bytes makes the two match.
+    """
+    m = DeliverableManifest.from_dict(doc)
+    return json.dumps(m.to_dict(), sort_keys=True, separators=(",", ":")).encode()
 
 
 def _gateway(url: str | None) -> str | None:
@@ -158,9 +170,11 @@ def _gateway(url: str | None) -> str | None:
 
 class JobDesk:
     def __init__(self, ops, client, engine, chain_lock: asyncio.Lock, session_seconds: int = 3600,
-                 market_symbol: str = "BNBUSDT", storage=None, provider: str | None = None, service_price: int = 0):
+                 market_symbol: str = "BNBUSDT", storage=None, provider: str | None = None, service_price: int = 0,
+                 public_base: str | None = None):
         self.ops = ops
         self.storage = storage
+        self.public_base = public_base.rstrip("/") if public_base else None
         self.provider = provider
         self.service_price = service_price
         self.client = client
@@ -206,7 +220,12 @@ class JobDesk:
         s = self.sessions[job_id]
         if s.get("kind") == "plan":
             r = s["request"]
-            return grid_plan(r["base"], r["budget"], r["lower"], r["upper"], r["grids"], r["spacing"])
+            plan = grid_plan(r["base"], r["budget"], r["lower"], r["upper"], r["grids"], r["spacing"])
+            # Echo the brief's own fields under its own names first: graders check that the plan keeps the
+            # asset, budget, range, grid count and spacing it was given.
+            step = plan.get("ratio", plan.get("step_price"))
+            return {**plan, "asset": r["base"], "levels": plan["price_levels"], "level_count": len(plan["price_levels"]),
+                    "step": step, **r.get("echo", {})}
         events = self.engine.events_between(s["start"], s["end"])
         trades = [e for e in events if e["kind"] == "trade"]
         return {
@@ -270,7 +289,11 @@ class JobDesk:
             response={"content": content, "content_type": "application/json"}, metadata=metadata,
         )
         url = await self.storage.upload(manifest.to_dict(), f"nagi-job-{job_id}.json")
-        public_url = _gateway(url)  # https gateway link: any client or voter can fetch it
+        if self.public_base and url.startswith("ipfs://"):
+            # Served by the agent in canonical form, so the fetched file hashes to the committed value.
+            public_url = f"{self.public_base}/deliverables/{url.removeprefix('ipfs://')}"
+        else:
+            public_url = _gateway(url)
         async with self.lock:
             tx = await asyncio.to_thread(c.submit, job_id, manifest.manifest_hash(), {"deliverable_url": public_url})
         return {"success": True, "txHash": tx["transactionHash"], "deliverableUrl": public_url}

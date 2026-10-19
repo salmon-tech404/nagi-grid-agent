@@ -106,8 +106,10 @@ POKTER_CHECK = json.dumps({
 
 
 def test_pokter_check_is_parsed_as_a_grid_plan_request():
-    assert grid_plan_request(POKTER_CHECK) == {"base": "BNB", "budget": 1000.0, "lower": 900.0, "upper": 1100.0,
-                                               "grids": 8, "spacing": "geometric"}
+    req = grid_plan_request(POKTER_CHECK)
+    assert {k: v for k, v in req.items() if k != "echo"} == {"base": "BNB", "budget": 1000.0, "lower": 900.0,
+                                                             "upper": 1100.0, "grids": 8, "spacing": "geometric"}
+    assert req["echo"]["budget_usdt"] == 1000 and req["echo"]["suite"] == "grid-plan-2"
     assert brief_task(POKTER_CHECK).startswith("Grid plan for BNB")
     assert grid_plan_request(NAGI_BRIEF) is None and grid_plan_request("plain text") is None
 
@@ -124,6 +126,39 @@ def test_grid_plan_job_is_answered_at_once_without_trading(monkeypatch):
     assert opt["deliverable_url"] == "https://gateway.pinata.cloud/ipfs/QmTest"
     plan = json.loads(storage.uploads[0][1]["response"]["content"])
     assert plan["grids"] == 8 and len(plan["price_levels"]) == 9 and plan["per_grid_quote"] == 125
+
+
+def test_served_bytes_hash_to_the_committed_value_even_after_reordering():
+    from web3 import Web3
+    from bnbagent.erc8183.schema import SCHEMA_VERSION, DeliverableManifest
+    from nagi.jobs import canonical_manifest_bytes
+    m = DeliverableManifest(version=SCHEMA_VERSION, job_id=1511, chain_id=97, contracts={"router": "0xR", "commerce": "0xC"},
+                            response={"content": '{"note":"price left the ±3 ATR band"}', "content_type": "application/json"},
+                            metadata={"kind": "grid-plan", "agent": "Nagi"})
+    gateway_copy = json.loads(json.dumps(m.to_dict()))  # what a pinning service hands back: same data, its own order
+    reordered = {k: gateway_copy[k] for k in reversed(list(gateway_copy))}
+    assert Web3.keccak(canonical_manifest_bytes(reordered)) == m.manifest_hash()
+
+
+def test_deliverable_link_points_at_the_agent_when_a_public_base_is_set(monkeypatch):
+    client = FakeClient({1511: chain_job(1511)})
+    desk = JobDesk(FakeOps(), client, FakeEngine(), asyncio.Lock(), storage=FakeStorage(), provider=NAGI,
+                   service_price=10**17, public_base="https://agent.example/")
+    desk.sessions[1511] = {"kind": "plan", "start": 0, "end": 0, "client": "0xc", "submitted": False,
+                           "request": grid_plan_request(POKTER_CHECK)}
+    asyncio.run(desk.finish_due())
+    assert client.submits[0][2]["deliverable_url"] == "https://agent.example/deliverables/QmTest"
+
+
+def test_grid_plan_answer_keeps_the_briefs_own_fields():
+    desk = _desk()
+    desk.sessions[1] = {"kind": "plan", "start": 0, "end": 0, "client": "0xc", "submitted": False,
+                        "request": grid_plan_request(POKTER_CHECK)}
+    a = desk.report(1)
+    assert (a["base"], a["budget_usdt"], a["range"], a["grids"], a["spacing"]) == (
+        "BNB", 1000, {"lower": 900, "upper": 1100}, 8, "geometric")
+    assert a["asset"] == "BNB" and len(a["levels"]) == 9 and a["levels"][0] == 900 and a["levels"][-1] == 1100
+    assert a["level_count"] == 9 and abs(a["step"] - (1100 / 900) ** (1 / 8)) < 1e-9
 
 
 def test_funded_job_opens_session_capped_by_submit_deadline(monkeypatch):
