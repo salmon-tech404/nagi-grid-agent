@@ -19,6 +19,8 @@ from typing import Any
 
 from bnbagent.erc8183.schema import SCHEMA_VERSION, DeliverableManifest
 
+from nagi import regime as regime_mod
+from nagi.assess import assess_pair, summary_text
 from nagi.market import fetch_klines
 from nagi.plan import grid_plan
 
@@ -208,6 +210,8 @@ class JobDesk:
             logger.warning("job %s: not enough time left to run a session", job_id)
             return None
         read_only = terms_forbid_trading(job.get("description", ""))
+        if read_only and await self._answer_assessment(job_id, job, now):
+            return None
         df = await fetch_klines(self.market_symbol)
         async with self.lock:
             opened = await asyncio.to_thread(self.engine.open_session, df, job_id, read_only)
@@ -216,8 +220,32 @@ class JobDesk:
         logger.info("job %s: session open until %s (%s)", job_id, end, [e["kind"] for e in opened])
         return None
 
+    async def _answer_assessment(self, job_id: int, job: dict[str, Any], now: int) -> bool:
+        """Read-only briefs get a written assessment at once (liquidity, suitability, grid, costs, risks).
+        Returns False if the data could not be read, so the caller falls back to a read-only session."""
+        w3 = getattr(getattr(self.engine, "ex", None), "w3", None)
+        if w3 is None:
+            return False
+        brief = str(_task_doc(job.get("description", "")).get("task") or "")
+        try:
+            df = await fetch_klines(self.market_symbol)
+            r = regime_mod.classify(df)
+            latest = df["open_time"].iloc[-1].isoformat() if "open_time" in df else None  # still-forming candle
+            answer = await asyncio.to_thread(assess_pair, w3, brief, r, latest)
+        except Exception as exc:
+            logger.warning("job %s: assessment failed (%s), falling back to a read-only session", job_id, exc)
+            return False
+        answer["report"] = summary_text(answer)
+        self.sessions[job_id] = {"kind": "assessment", "start": now, "end": now, "client": job.get("client"),
+                                 "answer": answer, "submitted": False}
+        logger.info("job %s: read-only assessment ready (%s, %s)", job_id, answer.get("pair"), answer.get("verdict"))
+        return True
+
     def report(self, job_id: int) -> dict[str, Any]:
         s = self.sessions[job_id]
+        if s.get("kind") == "assessment":
+            return {"agent": "Nagi", "category": "grid-trading", "job_id": job_id, "mode": "read-only assessment",
+                    **s["answer"]}
         if s.get("kind") == "plan":
             r = s["request"]
             plan = grid_plan(r["base"], r["budget"], r["lower"], r["upper"], r["grids"], r["spacing"])
@@ -246,7 +274,7 @@ class JobDesk:
         for job_id, s in list(self.sessions.items()):
             if s["submitted"] or s["end"] > now:
                 continue
-            kind = "grid-plan" if s.get("kind") == "plan" else "grid-session"
+            kind = {"plan": "grid-plan", "assessment": "grid-assessment"}.get(s.get("kind"), "grid-session")
             try:
                 body = json.dumps(self.report(job_id), separators=(",", ":"))
                 res = await self.deliver(job_id, body, {"agent": "Nagi", "kind": kind})
