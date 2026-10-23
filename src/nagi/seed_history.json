@@ -1,0 +1,1172 @@
+{
+  "start_block": 138474591,
+  "trades": {
+    "0x9edd99fc694029e725259abcee4f0440a9fa33f8e18a8ffa5fbb5c7c2f14b695": {
+      "tx": "0x9edd99fc694029e725259abcee4f0440a9fa33f8e18a8ffa5fbb5c7c2f14b695",
+      "ts": 1792067971,
+      "action": "sell",
+      "amount_bnb_wei": 1000000000000000,
+      "busd": 0.43881955169463743,
+      "receipt": "0x5f608dc89e3d2d58c4e0cbbf9cc8beccd4f89c69c11b4f62caf6d39b1964fc32",
+      "price_ref": 721.42,
+      "kind": "trade"
+    },
+    "0xb5958e3674af0bbfe436438ae6cc32dfd54c94ea5e7bad4a5aee479f5d21789d": {
+      "tx": "0xb5958e3674af0bbfe436438ae6cc32dfd54c94ea5e7bad4a5aee479f5d21789d",
+      "ts": 1792088093,
+      "action": "sell",
+      "amount_bnb_wei": 8000000000000000,
+      "busd": 3.5081056121424434,
+      "receipt": "0x58a1dbe244a6afe7e2e73778dfe4a2b7cc83cc002245908e3e9eb073ad295d2c",
+      "price_ref": 732.8,
+      "kind": "trade"
+    },
+    "0xb2c4381ff4e9d1f87643a88544799052c5d2082f58c267ead31f6f9c80602071": {
+      "tx": "0xb2c4381ff4e9d1f87643a88544799052c5d2082f58c267ead31f6f9c80602071",
+      "ts": 1792155366,
+      "action": "buy",
+      "amount_bnb_wei": 1991393719294142,
+      "busd": 0.8682883277744529,
+      "receipt": "0x81f13f60f36c6b83ade71eea65589e2c17a941d9b55644e6508fa21f5393044f",
+      "price_ref": 728.08,
+      "kind": "trade"
+    },
+    "0x7f12ec7cc3682d9d0a6f924baf0d3492a6e35966aab83edec75ad7a636f89c49": {
+      "tx": "0x7f12ec7cc3682d9d0a6f924baf0d3492a6e35966aab83edec75ad7a636f89c49",
+      "ts": 1792158407,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8688240467922693,
+      "receipt": "0xb81e734cf2394c584e47fe5372a497fae316f41559204ea271cfbd58a5c989f6",
+      "price_ref": 726.93,
+      "kind": "trade"
+    },
+    "0xc6cb99a763d611e85b86dbe54516ad7202b29d828f92dbc1f408d4c76e4606b3": {
+      "tx": "0xc6cb99a763d611e85b86dbe54516ad7202b29d828f92dbc1f408d4c76e4606b3",
+      "ts": 1792159010,
+      "action": "sell",
+      "amount_bnb_wei": 8000000000000000,
+      "busd": 3.472613632570664,
+      "receipt": "0xfdccc6d562921c42e4c987685cb6a5a462a6327477228dd105f2ff4d226bcb89",
+      "price_ref": 727.26,
+      "kind": "trade"
+    },
+    "0xc79b59a345c75fe6636db0c5c5f32520c7983cd1082d2870d449a5a495ef4951": {
+      "tx": "0xc79b59a345c75fe6636db0c5c5f32520c7983cd1082d2870d449a5a495ef4951",
+      "ts": 1792157805,
+      "action": "buy",
+      "amount_bnb_wei": 1991393624689888,
+      "busd": 0.8685561253552351,
+      "receipt": "0x39ef475ce5c9c969b9e378e4ad7a58c06fbd13b90ccbb12deb154ebfd6baec9b",
+      "price_ref": 726.88,
+      "kind": "trade"
+    },
+    "0x04a3fa080a36393fc75282fc902a294da02a39d7e04020131ca2f61093a4c0d2": {
+      "tx": "0x04a3fa080a36393fc75282fc902a294da02a39d7e04020131ca2f61093a4c0d2",
+      "ts": 1792208416,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8641424983542257,
+      "receipt": "0xb750d24ec33eca9e1342fd4ba02d1c6af1209bdfd44a97c9a91e2872ec81711d",
+      "price_ref": 722.67,
+      "kind": "trade"
+    },
+    "0x9fb8316303db464233bffc1ca54709c53082877ded1273ec7cb25daea218bf7f": {
+      "tx": "0x9fb8316303db464233bffc1ca54709c53082877ded1273ec7cb25daea218bf7f",
+      "ts": 1792209622,
+      "action": "buy",
+      "amount_bnb_wei": 1991395283592871,
+      "busd": 0.8638761254875609,
+      "receipt": "0xf1ef612bab78ba847a2260eb869e0fc02b3d86dc640c0de4e345482136f86692",
+      "price_ref": 722.43,
+      "kind": "trade"
+    },
+    "0xb6b88def7c1524174d6367579789acbe33af5e8ef9d857b400c349d348c823c7": {
+      "tx": "0xb6b88def7c1524174d6367579789acbe33af5e8ef9d857b400c349d348c823c7",
+      "ts": 1792221154,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8634748537764158,
+      "receipt": "0xfde99383652286beafbdd6edc9e9b6ed56c0b543c3f90d48d21ad5e89eff3af8",
+      "price_ref": 723.22,
+      "kind": "trade"
+    },
+    "0xafba1d826aa23526cccfb84922b4150a22c8c5fb61bb686541cfafd057a378ac": {
+      "tx": "0xafba1d826aa23526cccfb84922b4150a22c8c5fb61bb686541cfafd057a378ac",
+      "ts": 1792221457,
+      "action": "buy",
+      "amount_bnb_wei": 1991395521139364,
+      "busd": 0.8632087899191516,
+      "receipt": "0xc70e03cf5de49389ff9c88de7aa99a5014a0dc1e49e1dfa214b7072ced8c93fb",
+      "price_ref": 722.18,
+      "kind": "trade"
+    },
+    "0xb01247e5302b879ced406059139189fbb1740acb46acb0f7287e10da5aaff00d": {
+      "tx": "0xb01247e5302b879ced406059139189fbb1740acb46acb0f7287e10da5aaff00d",
+      "ts": 1792247917,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8618717546788525,
+      "receipt": "0x568044f17a7a5bd0bf7a45867622a9fd8566fbe2296f09db5b552e12d2b6d4d7",
+      "price_ref": 722.36,
+      "kind": "trade"
+    },
+    "0x6cb0547b922b8f18049fc8ded7774c928e95f4b63e689a165ac22795cc190ff5": {
+      "tx": "0x6cb0547b922b8f18049fc8ded7774c928e95f4b63e689a165ac22795cc190ff5",
+      "ts": 1792249424,
+      "action": "buy",
+      "amount_bnb_wei": 1991396093321058,
+      "busd": 0.8616064329221962,
+      "receipt": "0x3b532650c7544e7d5fab0f3ec86540b785b15475f2805dcbe2c7ab08f39b845b",
+      "price_ref": 721.35,
+      "kind": "trade"
+    },
+    "0x7c2172074e9441567c702a664f75c71b10624e86514c4d70e904cb60c941718d": {
+      "tx": "0x7c2172074e9441567c702a664f75c71b10624e86514c4d70e904cb60c941718d",
+      "ts": 1792269309,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.861871142514827,
+      "receipt": "0x98acd5d66355047439fcc7df39c32b7f35b6f44b94a9e909e054c957b77b9393",
+      "price_ref": 718.3,
+      "kind": "trade"
+    },
+    "0xcc301d2bd569913dc7ab1a6cb0a76df8c43bd13ea0dbed63c7ee59ec8fcea005": {
+      "tx": "0xcc301d2bd569913dc7ab1a6cb0a76df8c43bd13ea0dbed63c7ee59ec8fcea005",
+      "ts": 1792270814,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8616058211224839,
+      "receipt": "0xd57077b338c624b8af04ae2e24cd359d59b5470e99a7e13a0ef22967a20fcd43",
+      "price_ref": 719.91,
+      "kind": "trade"
+    },
+    "0xa8a90b339801c81cd678f2678f35480000249eeec53350b642a8d597842fd625": {
+      "tx": "0xa8a90b339801c81cd678f2678f35480000249eeec53350b642a8d597842fd625",
+      "ts": 1792272349,
+      "action": "buy",
+      "amount_bnb_wei": 1991396187977550,
+      "busd": 0.8613406222683222,
+      "receipt": "0x2831ecfeb29b308e1659d114b95e6a9a05162f101aed3c257e04ed06726074d2",
+      "price_ref": 718.02,
+      "kind": "trade"
+    },
+    "0x03b827c7995dd36826247b6fed375ec0c0b9ecee82751c26decec5b4577965a8": {
+      "tx": "0x03b827c7995dd36826247b6fed375ec0c0b9ecee82751c26decec5b4577965a8",
+      "ts": 1792272653,
+      "action": "buy",
+      "amount_bnb_wei": 1991396094132105,
+      "busd": 0.8616052092546328,
+      "receipt": "0x0295264684fc52b5c8b93ab08744c9c141c8aaed144c3a8af38bcc2e3d40a570",
+      "price_ref": 716.22,
+      "kind": "trade"
+    },
+    "0x9187e922b2abe2868578fb13601451ae211b07e2093c54e47e4c3f6e47ff2b3f": {
+      "tx": "0x9187e922b2abe2868578fb13601451ae211b07e2093c54e47e4c3f6e47ff2b3f",
+      "ts": 1792272958,
+      "action": "buy",
+      "amount_bnb_wei": 1991396000257870,
+      "busd": 0.861869918120408,
+      "receipt": "0x7af312d6b03df461c07811cefe6fa0ab0689d31565fc0d97ca7370784cb11de8",
+      "price_ref": 713.78,
+      "kind": "trade"
+    },
+    "0x572f994f68462a96228af4e39061221670924be02443c03a7c5931f14545dce6": {
+      "tx": "0x572f994f68462a96228af4e39061221670924be02443c03a7c5931f14545dce6",
+      "ts": 1792272960,
+      "action": "buy",
+      "amount_bnb_wei": 1991395906354833,
+      "busd": 0.862134748940498,
+      "receipt": "0x618248e529f6c69efd1a61c6b499d5fdda0e2082032907f82e654496f722d2c7",
+      "price_ref": 713.26,
+      "kind": "trade"
+    },
+    "0x5a478815acff16fe3f7555f7c08b369ca5d9c98cd9f11480df9da6209aea2133": {
+      "tx": "0x5a478815acff16fe3f7555f7c08b369ca5d9c98cd9f11480df9da6209aea2133",
+      "ts": 1792277532,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8623997017898102,
+      "receipt": "0xc6afdcbbfe58e19818887c64bb9c7d2c1b355b22f9c4c8ee73d598f898fd032c",
+      "price_ref": 717.04,
+      "kind": "trade"
+    },
+    "0xaa609fee814b768284b8e3bba009a2cd0980bc62ca626a83b05639e7cf0efea7": {
+      "tx": "0xaa609fee814b768284b8e3bba009a2cd0980bc62ca626a83b05639e7cf0efea7",
+      "ts": 1792278772,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8623990890391334,
+      "receipt": "0xc350510d1d25ebc6ccae7e1a56008259cce207afa0c858d1c8a2a883477d2793",
+      "price_ref": 717.36,
+      "kind": "trade"
+    },
+    "0xe49ef177918d64ae652e5a88cadee304ee73bbfa8d839a23271ac7f751674a00": {
+      "tx": "0xe49ef177918d64ae652e5a88cadee304ee73bbfa8d839a23271ac7f751674a00",
+      "ts": 1792277837,
+      "action": "buy",
+      "amount_bnb_wei": 1991395906760615,
+      "busd": 0.8621341365536964,
+      "receipt": "0x66462065eb059e1da13456f85e997484f01cf60e6513a5636f1268d2b6f45ee3",
+      "price_ref": 716.84,
+      "kind": "trade"
+    },
+    "0x06b89c7bec51b6092ce23140b71c4a925b4263683e82ba8ac877100806b5e8f1": {
+      "tx": "0x06b89c7bec51b6092ce23140b71c4a925b4263683e82ba8ac877100806b5e8f1",
+      "ts": 1792280612,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8623984762893526,
+      "receipt": "0x996493b9b82ca4dfbcfe9f772a7b6a71df1e9bc37b082dac213c3df78361756b",
+      "price_ref": 717.04,
+      "kind": "trade"
+    },
+    "0x78cf891efdb1c9de18d5b20b81ae55cee847af4836d6973040bd407771f633d2": {
+      "tx": "0x78cf891efdb1c9de18d5b20b81ae55cee847af4836d6973040bd407771f633d2",
+      "ts": 1792279408,
+      "action": "buy",
+      "amount_bnb_wei": 1991395907166397,
+      "busd": 0.8621335241677899,
+      "receipt": "0x41b65f97a8b544c28f9190f77d634f1927561d86cc798bd489520b2a24136502",
+      "price_ref": 716.42,
+      "kind": "trade"
+    },
+    "0x4405d25429871e5d96d7ac4eac63955bd454ce53003e74d357ea180e79babe18": {
+      "tx": "0x4405d25429871e5d96d7ac4eac63955bd454ce53003e74d357ea180e79babe18",
+      "ts": 1792287660,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8621329117827783,
+      "receipt": "0xd6f9b87faaa573276fa21e05051cf7ac1657b633bfc15ba825a805fd1db47001",
+      "price_ref": 721.55,
+      "kind": "trade"
+    },
+    "0x892cc8c7fcc2663bc2295e52bae1a396874c5707679109f2f21cb591c08772c4": {
+      "tx": "0x892cc8c7fcc2663bc2295e52bae1a396874c5707679109f2f21cb591c08772c4",
+      "ts": 1792303907,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8621322993295488,
+      "receipt": "0x9c6895236dd03d02efca6c5a1e49049a32efbcf5e8a2db0fb07fbc3197de75e8",
+      "price_ref": 720.52,
+      "kind": "trade"
+    },
+    "0xcde2b93074e05a3a75a36e25058253beabb9b0f0f58af28a93c1c9322db14d50": {
+      "tx": "0xcde2b93074e05a3a75a36e25058253beabb9b0f0f58af28a93c1c9322db14d50",
+      "ts": 1792301801,
+      "action": "buy",
+      "amount_bnb_wei": 1991396001880495,
+      "busd": 0.86186746996398,
+      "receipt": "0x4dcf16d7906cd901ecde4a195b61bd1a0e37133be7d04af6f8c5e73f5923611e",
+      "price_ref": 719.42,
+      "kind": "trade"
+    },
+    "0x1249e2f4a6acb1c91591c6101604b089a3656e541ef0a2be2583fd90ae59202e": {
+      "tx": "0x1249e2f4a6acb1c91591c6101604b089a3656e541ef0a2be2583fd90ae59202e",
+      "ts": 1792330135,
+      "action": "buy",
+      "amount_bnb_wei": 1991396002286147,
+      "busd": 0.8618668578752887,
+      "receipt": "0x7c3b20313ac0edcda26f50ad0b8941f48d2d0536a54120c7e7c9b45dd01364b1",
+      "price_ref": 719.4,
+      "kind": "trade"
+    },
+    "0xd93f1de1e75c8393be0a178562ddd0ca70fd4b132292312bf6568f8fe801ed40": {
+      "tx": "0xd93f1de1e75c8393be0a178562ddd0ca70fd4b132292312bf6568f8fe801ed40",
+      "ts": 1792330137,
+      "action": "buy",
+      "amount_bnb_wei": 1990784286655928,
+      "busd": 0.8618668578752887,
+      "receipt": "0x12abe67dce20199e11d1b242c35efcc999088afba7f52ef3e97909bf68e90e82",
+      "price_ref": 719.4,
+      "kind": "trade"
+    },
+    "0xdc179de50018cdf26a24d1f4684f4fc113a38d3fef09569ac0d2c32942c0cb4b": {
+      "tx": "0xdc179de50018cdf26a24d1f4684f4fc113a38d3fef09569ac0d2c32942c0cb4b",
+      "ts": 1792362082,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8623965565134011,
+      "receipt": "0x0898b4b23e0dc5e9537e95b2588dbd22f38976c222750af81eefe145c7df94e6",
+      "price_ref": 717.61,
+      "kind": "trade"
+    },
+    "0x3f9705b7adf87cee8e51fe8b80932fada164f29becfc5f9b7c34d5f2e3127ada": {
+      "tx": "0x3f9705b7adf87cee8e51fe8b80932fada164f29becfc5f9b7c34d5f2e3127ada",
+      "ts": 1792362987,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8623959437672938,
+      "receipt": "0xafaae90031a113abcf4e3d98b7ae03052748afe7b6df030871b11f1b9908ba3d",
+      "price_ref": 718.2,
+      "kind": "trade"
+    },
+    "0x2d8d5f660f82723e3aa391c02e28b1de323c318460d8fb40dfb572bc8307b67a": {
+      "tx": "0x2d8d5f660f82723e3aa391c02e28b1de323c318460d8fb40dfb572bc8307b67a",
+      "ts": 1792363590,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8621303807574086,
+      "receipt": "0xe87bccb48ef91f7e1274dd494e62fdc90ea98d8e24c4aea910b722ec7d2bd0e3",
+      "price_ref": 719.83,
+      "kind": "trade"
+    },
+    "0xdc151491f9b157ab4c2ed2a6e0c89f6cd9d65fcb8fef0d0133203d48cceaf7b4": {
+      "tx": "0xdc151491f9b157ab4c2ed2a6e0c89f6cd9d65fcb8fef0d0133203d48cceaf7b4",
+      "ts": 1792362685,
+      "action": "buy",
+      "amount_bnb_wei": 1991395908818356,
+      "busd": 0.8621309931387495,
+      "receipt": "0xafab804d5df686dd1a8cfcd15a0ad113df74b92eedfe4ebeddb94b962f0812c0",
+      "price_ref": 717.15,
+      "kind": "trade"
+    },
+    "0xc900ca6996c325382dd064f041f870b7861c9f3e68f3bc0200ab3474e57aaa32": {
+      "tx": "0xc900ca6996c325382dd064f041f870b7861c9f3e68f3bc0200ab3474e57aaa32",
+      "ts": 1792365996,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8618649404342767,
+      "receipt": "0xd52a7aea170add834080426842c78ab9f94185480840591ae5245dc287b742d0",
+      "price_ref": 721.84,
+      "kind": "trade"
+    },
+    "0x552416816bc7cf8ac7d734935a1689da30b87e3c5d3f7c8c8c5583a6f76b2b6a": {
+      "tx": "0x552416816bc7cf8ac7d734935a1689da30b87e3c5d3f7c8c8c5583a6f76b2b6a",
+      "ts": 1792366629,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615996227223246,
+      "receipt": "0x50d694df281c04047f0c5d96f7c837e9ec55639e61c0b772240405b0f2c96860",
+      "price_ref": 722.83,
+      "kind": "trade"
+    },
+    "0xbf016eb109725923fcd902d41cc8e3a7d08fe4c376ab99d077eafe77fdbab6aa": {
+      "tx": "0xbf016eb109725923fcd902d41cc8e3a7d08fe4c376ab99d077eafe77fdbab6aa",
+      "ts": 1792406358,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.861599010863503,
+      "receipt": "0x28a9b2ad28d2394ad1d7c1bdb9a0b5be9e9a3bc677810b4c1dfe530fc4bccf20",
+      "price_ref": 724.88,
+      "kind": "trade"
+    },
+    "0xe17692cfd6df87eb53993aa798be3d2159ee2b430cabe99dbd365bed0b5bce08": {
+      "tx": "0xe17692cfd6df87eb53993aa798be3d2159ee2b430cabe99dbd365bed0b5bce08",
+      "ts": 1792407298,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615983990055754,
+      "receipt": "0x66057c02660bdffb4232cf1b346e3d634bdf6e63bedb1aeee98bd3751a6eca1f",
+      "price_ref": 725.0,
+      "kind": "trade"
+    },
+    "0xf63785a94d45405675a130017ddd2780d162ba2ec4ab76d0076e18a8a5e9bc2a": {
+      "tx": "0xf63785a94d45405675a130017ddd2780d162ba2ec4ab76d0076e18a8a5e9bc2a",
+      "ts": 1792408869,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615977871485418,
+      "receipt": "0x111d0cebbf898092ca9057b4563d24f7537fced80ec029364070bc22b8b305e7",
+      "price_ref": 724.99,
+      "kind": "trade"
+    },
+    "0xa6456ade4796e0d3963b2496cd06359d447d5c3079e4c63f0021e9f45d1887db": {
+      "tx": "0xa6456ade4796e0d3963b2496cd06359d447d5c3079e4c63f0021e9f45d1887db",
+      "ts": 1792405756,
+      "action": "buy",
+      "amount_bnb_wei": 1991396192060401,
+      "busd": 0.8613344275460364,
+      "receipt": "0x7f527bbd05f37cefbc7f1d2d1eed5f7a8c4bf7bcd327ee82a6797aeeeae28b20",
+      "price_ref": 724.4,
+      "kind": "trade"
+    },
+    "0xfa55e8ab64e15419b9d2587a1b9f3eadd1ee3625de29bd76e58153574c98db82": {
+      "tx": "0xfa55e8ab64e15419b9d2587a1b9f3eadd1ee3625de29bd76e58153574c98db82",
+      "ts": 1792406996,
+      "action": "buy",
+      "amount_bnb_wei": 1991396192465792,
+      "busd": 0.8613338160512892,
+      "receipt": "0xf152170f4cf31c1918def3683d2975c92fff8b0bffbb6de29a011aa8c975f6c4",
+      "price_ref": 724.27,
+      "kind": "trade"
+    },
+    "0xe029a5147220cc2079c5721bccebd68cf3aa1e5e0fe485610352f2c0503a6564": {
+      "tx": "0xe029a5147220cc2079c5721bccebd68cf3aa1e5e0fe485610352f2c0503a6564",
+      "ts": 1792408536,
+      "action": "buy",
+      "amount_bnb_wei": 1991396192871182,
+      "busd": 0.8613332045574353,
+      "receipt": "0x37271f734e2364a74010fd853d4851c76f69479a9064c2031a190bd3fad896e0",
+      "price_ref": 724.27,
+      "kind": "trade"
+    },
+    "0x3b81f346b170d4ee7cfc13e1ef8a6b686f90416e4ab0da6805ba47f875721697": {
+      "tx": "0x3b81f346b170d4ee7cfc13e1ef8a6b686f90416e4ab0da6805ba47f875721697",
+      "ts": 1792409504,
+      "action": "buy",
+      "amount_bnb_wei": 1991396193276571,
+      "busd": 0.8613325930644746,
+      "receipt": "0x154bc9a319eef55f333b15813168a5fbeecb69261ea39d8190cc0092a3951d25",
+      "price_ref": 724.17,
+      "kind": "trade"
+    },
+    "0xf1f920b2c819f18d5b1702c48737bb85b1c9769ee2e7ba2169ff7d8844a398d0": {
+      "tx": "0xf1f920b2c819f18d5b1702c48737bb85b1c9769ee2e7ba2169ff7d8844a398d0",
+      "ts": 1792410138,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615971752924022,
+      "receipt": "0x8fd17ac5750683091714af1558c2d1f07617a1ea8023c3efbea6d93fd3ee7410",
+      "price_ref": 725.24,
+      "kind": "trade"
+    },
+    "0x9aa74a1c8585d00eb31ae7e263d8fc78e67ed6a5fb4faee3fe817f77850534b9": {
+      "tx": "0x9aa74a1c8585d00eb31ae7e263d8fc78e67ed6a5fb4faee3fe817f77850534b9",
+      "ts": 1792413476,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8613319815724072,
+      "receipt": "0x342232b5fb63f0c1474cd1fe88fc681b8b0595f3ab6195b9be271764b35bccf8",
+      "price_ref": 727.71,
+      "kind": "trade"
+    },
+    "0xe814d958cab35c3b53abadfbba0d782eb9a023378b0a9a89d9c65ad67fe89b7b": {
+      "tx": "0xe814d958cab35c3b53abadfbba0d782eb9a023378b0a9a89d9c65ad67fe89b7b",
+      "ts": 1792414412,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8613313700122429,
+      "receipt": "0x2ce94e67d1ad13fa835705646eefc77555a81f9e8b7fffa4314bcb5eb220e9e0",
+      "price_ref": 728.43,
+      "kind": "trade"
+    },
+    "0xa0f41d213fbcc5bfdcf598a234ccb6464e174574c264325061bb7afd521c1c94": {
+      "tx": "0xa0f41d213fbcc5bfdcf598a234ccb6464e174574c264325061bb7afd521c1c94",
+      "ts": 1792414110,
+      "action": "buy",
+      "amount_bnb_wei": 1991396287902138,
+      "busd": 0.8610669103116214,
+      "receipt": "0x69018e418bdc0fa2022a50e3f7c210af9022b940a7f655ff486b820acd905be3",
+      "price_ref": 727.91,
+      "kind": "trade"
+    },
+    "0x4a8cec36c9692e4c682865376de96a9a8976fd3f85d88d3d6be9714d7d725b67": {
+      "tx": "0x4a8cec36c9692e4c682865376de96a9a8976fd3f85d88d3d6be9714d7d725b67",
+      "ts": 1792415316,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8610662991152986,
+      "receipt": "0xf6e0e745d3b704ef5f074ba20fab2eda3395a79a9621586c638f91295e72a6be",
+      "price_ref": 729.12,
+      "kind": "trade"
+    },
+    "0x0d8122a4b75fd80271276a028dfe98080961aa328546ba6ac77cfd270ce34d07": {
+      "tx": "0x0d8122a4b75fd80271276a028dfe98080961aa328546ba6ac77cfd270ce34d07",
+      "ts": 1792416552,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8610656878509192,
+      "receipt": "0x98c61be163e475d29760aed0e969eef08a854d11d1c6428e6efef1ed5b3ad5ca",
+      "price_ref": 729.13,
+      "kind": "trade"
+    },
+    "0x66e303568e8591d51209c951d1cc6e095cc38bfba4747162777b027996092b81": {
+      "tx": "0x66e303568e8591d51209c951d1cc6e095cc38bfba4747162777b027996092b81",
+      "ts": 1792415618,
+      "action": "buy",
+      "amount_bnb_wei": 1991396382498435,
+      "busd": 0.8608013506019158,
+      "receipt": "0x9454a4e605b0ba97b9ed2800813c6c83ffdc222a97bd19ae23515e16d2cb8812",
+      "price_ref": 728.5,
+      "kind": "trade"
+    },
+    "0x128e36693e9a31caedd06e0d7346c3c998703104c7741e06b5fb2461beb2a59f": {
+      "tx": "0x128e36693e9a31caedd06e0d7346c3c998703104c7741e06b5fb2461beb2a59f",
+      "ts": 1792416855,
+      "action": "buy",
+      "amount_bnb_wei": 1991396382903565,
+      "busd": 0.8608007397011472,
+      "receipt": "0x116647e8a38980d38e5774e5845fc8fe357d3ae5b5c78d965a39b4119b74925b",
+      "price_ref": 728.69,
+      "kind": "trade"
+    },
+    "0x86cf4dc8609f1c3dc5954fbfe7d3bfc6c5aa2456d0f3a576b9106b550f521f2e": {
+      "tx": "0x86cf4dc8609f1c3dc5954fbfe7d3bfc6c5aa2456d0f3a576b9106b550f521f2e",
+      "ts": 1792417158,
+      "action": "buy",
+      "amount_bnb_wei": 1991396289117905,
+      "busd": 0.8610650765874326,
+      "receipt": "0xf785da2c1fc6cfccdb62ba3e5bd0833c53a59419a33c49430ad064556a2fa550",
+      "price_ref": 727.5,
+      "kind": "trade"
+    },
+    "0x0c10b538c78c05a789a2da687785c079b4a5cd2ea91077c912d3437ff0648cf8": {
+      "tx": "0x0c10b538c78c05a789a2da687785c079b4a5cd2ea91077c912d3437ff0648cf8",
+      "ts": 1792421400,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8613295351991737,
+      "receipt": "0xd4e51f08069a4650d0e86411f0dd62f0e97edd7550d6ee7275b7c21d7a0049eb",
+      "price_ref": 728.29,
+      "kind": "trade"
+    },
+    "0x64d137ea5318a6097af906d573d52983b1575026772b6c19f1f7efd3c7ddd8a6": {
+      "tx": "0x64d137ea5318a6097af906d573d52983b1575026772b6c19f1f7efd3c7ddd8a6",
+      "ts": 1792423512,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8613289236425831,
+      "receipt": "0xb48158a82aed10c4546619b7843d64c81da5adbd2e3c15322f1277f3dc00abfd",
+      "price_ref": 728.27,
+      "kind": "trade"
+    },
+    "0xf71f29b598df8dbfd3aafa028dd2976f3e4503adc2a0b06295b31f0a8b68d20d": {
+      "tx": "0xf71f29b598df8dbfd3aafa028dd2976f3e4503adc2a0b06295b31f0a8b68d20d",
+      "ts": 1792422309,
+      "action": "buy",
+      "amount_bnb_wei": 1991396289523162,
+      "busd": 0.8610644653937877,
+      "receipt": "0x632977a44c7d0cfc6c80c8df5357ff6370505b0753c4bcb568cba2e97e3b2dfe",
+      "price_ref": 727.25,
+      "kind": "trade"
+    },
+    "0xfa0511a27aee315419e55a0a8c8c0b044dd538bab2300c74020a60ad7c797b89": {
+      "tx": "0xfa0511a27aee315419e55a0a8c8c0b044dd538bab2300c74020a60ad7c797b89",
+      "ts": 1792423848,
+      "action": "buy",
+      "amount_bnb_wei": 1991396289928419,
+      "busd": 0.8610638542010355,
+      "receipt": "0x2ada4614f260553af144cd4f7467690610d7094aaeb1773e24bda36573c81ec4",
+      "price_ref": 727.01,
+      "kind": "trade"
+    },
+    "0xbf3d2c4c276143cf5fadef0c77dccb408af6dd788bdf4f834e7518e6fe2f07c5": {
+      "tx": "0xbf3d2c4c276143cf5fadef0c77dccb408af6dd788bdf4f834e7518e6fe2f07c5",
+      "ts": 1792447488,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8613283120868859,
+      "receipt": "0x7cc341a74823a15c7f0053ba7d0396b22b2becacc93ea7174019827305a25315",
+      "price_ref": 731.49,
+      "kind": "trade"
+    },
+    "0x2a43d9b18a713d78bd99a75063beb0e9b3669ca081ab05bb22ee61de820ddb60": {
+      "tx": "0x2a43d9b18a713d78bd99a75063beb0e9b3669ca081ab05bb22ee61de820ddb60",
+      "ts": 1792455875,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615922798544321,
+      "receipt": "0xf5945080364e75e3bb02fc49b89e0603a8cba66bddbfc1f8aab8d9dd6574f679",
+      "price_ref": 729.06,
+      "kind": "trade"
+    },
+    "0x475f4dbac2f4bb54695e6cbee43f11481b1c014ecc6099863f366fa22648ff85": {
+      "tx": "0x475f4dbac2f4bb54695e6cbee43f11481b1c014ecc6099863f366fa22648ff85",
+      "ts": 1792455070,
+      "action": "buy",
+      "amount_bnb_wei": 1991396290333675,
+      "busd": 0.8610632430091758,
+      "receipt": "0x992ca4f96ed7ec18845436104df27a577375ae9575499adb4969caa069a06d56",
+      "price_ref": 729.72,
+      "kind": "trade"
+    },
+    "0xd3996eebdf43d89a185a9859e80961d62ee2c1a9004c0b78360ceb838d94359e": {
+      "tx": "0xd3996eebdf43d89a185a9859e80961d62ee2c1a9004c0b78360ceb838d94359e",
+      "ts": 1792455574,
+      "action": "buy",
+      "amount_bnb_wei": 1991396196519626,
+      "busd": 0.8613277005320821,
+      "receipt": "0x930dbfe5abfbf115085bc654f476320c1659fe49dc20c46bbe8ff9a5d7c2b144",
+      "price_ref": 728.6,
+      "kind": "trade"
+    },
+    "0x4540e8568a58e65a4f19793a1ee8cef8f477ae6315fa816bf7653c62cb3d1887": {
+      "tx": "0x4540e8568a58e65a4f19793a1ee8cef8f477ae6315fa816bf7653c62cb3d1887",
+      "ts": 1792456178,
+      "action": "buy",
+      "amount_bnb_wei": 1991396196925010,
+      "busd": 0.8613270890471606,
+      "receipt": "0x41bc9c93e062eedb976b0645d8e20044f25eebe39bc27e0f0eff86f4a75cc67c",
+      "price_ref": 728.15,
+      "kind": "trade"
+    },
+    "0xe8bf2bb86d8e372c042e5cde3e03c3317a19148f2749e97a08aa4365e6b3fcd6": {
+      "tx": "0xe8bf2bb86d8e372c042e5cde3e03c3317a19148f2749e97a08aa4365e6b3fcd6",
+      "ts": 1792456781,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8615916680063386,
+      "receipt": "0x61e1755c01e6fa7f6f39c1b216ddc9244a45c93d29f1d3bf31b5db8f5c42f97c",
+      "price_ref": 728.97,
+      "kind": "trade"
+    },
+    "0xbd6c817dd3c62a3f6157d85a8e479e94417a34b80ef59e6d3069503e1dad8dc8": {
+      "tx": "0xbd6c817dd3c62a3f6157d85a8e479e94417a34b80ef59e6d3069503e1dad8dc8",
+      "ts": 1792458021,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8762235865525176,
+      "receipt": "0x890cb17b89dbe4a882b9295f6984df14b62b73269cadfbd845565b2a1ab93a43",
+      "price_ref": 729.43,
+      "kind": "trade"
+    },
+    "0x8b4a34451ec67683fd3a6a68f308beb6464bb7d165ade3cf45e35864793b3770": {
+      "tx": "0x8b4a34451ec67683fd3a6a68f308beb6464bb7d165ade3cf45e35864793b3770",
+      "ts": 1792460158,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8759516150400387,
+      "receipt": "0xc17f7e34a345c61227bd360f23b0d173b7b20fd78dbaf0c448ff8612c8c5c81f",
+      "price_ref": 727.68,
+      "kind": "trade"
+    },
+    "0xd47e227d22bf2a1e2a6cfcf4427ffbf2926f9366d8edffe38e71e3a1564717c9": {
+      "tx": "0xd47e227d22bf2a1e2a6cfcf4427ffbf2926f9366d8edffe38e71e3a1564717c9",
+      "ts": 1792457388,
+      "action": "buy",
+      "amount_bnb_wei": 1991396197330394,
+      "busd": 0.8613264775631324,
+      "receipt": "0x5dd51306195ebb45830208b37db69a1020f275eeb0d432a8f8ad96caa985d700",
+      "price_ref": 728.37,
+      "kind": "trade"
+    },
+    "0xd9e8b706197b2fc18cc45023ffd44925e4d1d1da3ed2e05e609a07e92c1f7ef9": {
+      "tx": "0xd9e8b706197b2fc18cc45023ffd44925e4d1d1da3ed2e05e609a07e92c1f7ef9",
+      "ts": 1792467406,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8756797701762126,
+      "receipt": "0x6aca1e9d01d06ac91a5a3534653e743564aab7dd6f436053668be0a3f9d3e243",
+      "price_ref": 730.01,
+      "kind": "trade"
+    },
+    "0x1863dce9167bf2dcb75b842b3d80103537625df630a63797a7c3319114a1daed": {
+      "tx": "0x1863dce9167bf2dcb75b842b3d80103537625df630a63797a7c3319114a1daed",
+      "ts": 1792476463,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.875679142589159,
+      "receipt": "0x7928c91abac45616df9bcfc6522ec9204b9c3d161f0075c268a6fc14224e5352",
+      "price_ref": 729.21,
+      "kind": "trade"
+    },
+    "0xc3dfe794e47b4d9dd2b65ca2a72eb30bf111fa9252b3154083510abd8fdd6bc6": {
+      "tx": "0xc3dfe794e47b4d9dd2b65ca2a72eb30bf111fa9252b3154083510abd8fdd6bc6",
+      "ts": 1792477368,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.875678515003031,
+      "receipt": "0x295087d7a110ab07a477d1895161608d41a778507473b9000030664e5baca9a7",
+      "price_ref": 729.43,
+      "kind": "trade"
+    },
+    "0x7c57367fe0b7b9e4354d944106c7811629f6aff231bc71923e503a28517c666a": {
+      "tx": "0x7c57367fe0b7b9e4354d944106c7811629f6aff231bc71923e503a28517c666a",
+      "ts": 1792476161,
+      "action": "buy",
+      "amount_bnb_wei": 1991391223228498,
+      "busd": 0.8754080518824037,
+      "receipt": "0xc61f6625de3da500bc80204a440ed827bad7be81232b88bcd87ee2ece28778b8",
+      "price_ref": 729.0,
+      "kind": "trade"
+    },
+    "0x8dc66f2e6a91652bba38a92c1284d53298ee078f794672831f8bfadec2d7a183": {
+      "tx": "0x8dc66f2e6a91652bba38a92c1284d53298ee078f794672831f8bfadec2d7a183",
+      "ts": 1792477066,
+      "action": "buy",
+      "amount_bnb_wei": 1991391223640738,
+      "busd": 0.875407424671725,
+      "receipt": "0x6366e998ed497341a107034ddd6c8dc0726529df2141007f90ca9f003bb8e587",
+      "price_ref": 728.96,
+      "kind": "trade"
+    },
+    "0x61e1466850f98d2ccc7f1a4f15d43aab5c2b85a4b0d74cb581fbf4051afefaea": {
+      "tx": "0x61e1466850f98d2ccc7f1a4f15d43aab5c2b85a4b0d74cb581fbf4051afefaea",
+      "ts": 1792481610,
+      "action": "buy",
+      "amount_bnb_wei": 1991391224052978,
+      "busd": 0.8754067974619713,
+      "receipt": "0x727dd70fc59e462ce703529a1bdc0d72d71bf429de8f18353f092cbb8a4a6694",
+      "price_ref": 728.47,
+      "kind": "trade"
+    },
+    "0xc72d86c580f7a619082d52956394344388ef8ef97969103bbd67dc4f4c70b219": {
+      "tx": "0xc72d86c580f7a619082d52956394344388ef8ef97969103bbd67dc4f4c70b219",
+      "ts": 1792498781,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8743205652954855,
+      "receipt": "0x75c0170e57f33c4d6d85933dfa490237f133cf60921fdb9bea0fae971e8c4cd0",
+      "price_ref": 730.17,
+      "kind": "trade"
+    },
+    "0x466734d43d429050bdfac7d35b7393fc55d29f3db3e8d75732c4d3b69ddc6481": {
+      "tx": "0x466734d43d429050bdfac7d35b7393fc55d29f3db3e8d75732c4d3b69ddc6481",
+      "ts": 1792499084,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8740494797997191,
+      "receipt": "0x75c95cb6652714942ce0239a3f67c5ba2d911c4fe0027c9ad74d63f2c496dfb8",
+      "price_ref": 731.34,
+      "kind": "trade"
+    },
+    "0x103968ad098b46c21975a95106c19924d57d389de1e374c35fc296e16b6dc003": {
+      "tx": "0x103968ad098b46c21975a95106c19924d57d389de1e374c35fc296e16b6dc003",
+      "ts": 1792499989,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8740488540437822,
+      "receipt": "0xaeea054bdc4595f3417f02d466362b36a570129f82cad7f9902944efbbd21b03",
+      "price_ref": 731.42,
+      "kind": "trade"
+    },
+    "0xd84fe07ee3e7175e6f264d27fd950936032872450b5d42764525305172fd2ca1": {
+      "tx": "0xd84fe07ee3e7175e6f264d27fd950936032872450b5d42764525305172fd2ca1",
+      "ts": 1792500321,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8737778950216575,
+      "receipt": "0x811c9d71426f5f066370ee84fa66cd58755d619afb4948a29cd688463a7e9369",
+      "price_ref": 731.96,
+      "kind": "trade"
+    },
+    "0x1a3bfbd6c9ab79a701b23aedbb9c7fb88f16bb18e0b16150f918acc7b7204c1d": {
+      "tx": "0x1a3bfbd6c9ab79a701b23aedbb9c7fb88f16bb18e0b16150f918acc7b7204c1d",
+      "ts": 1792502494,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8740476024637504,
+      "receipt": "0x3343f9407a1f0b142555e24ff73eafe5691401a38a0e0d1f2c77f2acd518fb53",
+      "price_ref": 730.99,
+      "kind": "trade"
+    },
+    "0x815270029ac6225d03ddfabac9c67c20da708c6cbc9227eb46798366a08181cc": {
+      "tx": "0x815270029ac6225d03ddfabac9c67c20da708c6cbc9227eb46798366a08181cc",
+      "ts": 1792499387,
+      "action": "buy",
+      "amount_bnb_wei": 1991391798560520,
+      "busd": 0.8737785204026571,
+      "receipt": "0xca839f0ed27385cb9f99b6a520c524e9180635f1e80f89d5bb8faf49345a56a1",
+      "price_ref": 730.66,
+      "kind": "trade"
+    },
+    "0xb60e2a21fae7fd938ace33a95188aa92d9600a287e0b9d1a641b2a02265753b5": {
+      "tx": "0xb60e2a21fae7fd938ace33a95188aa92d9600a287e0b9d1a641b2a02265753b5",
+      "ts": 1792500624,
+      "action": "buy",
+      "amount_bnb_wei": 1991391894550498,
+      "busd": 0.8735070620197695,
+      "receipt": "0x70c2b165e6343eef3f60f41a32204efa4364a5cccbe7a42b2b966160985f69d4",
+      "price_ref": 731.13,
+      "kind": "trade"
+    },
+    "0x6270a8c453fae5c942b3504362bbe055c08a9e1c7cf40f9e8c477be43d4a7510": {
+      "tx": "0x6270a8c453fae5c942b3504362bbe055c08a9e1c7cf40f9e8c477be43d4a7510",
+      "ts": 1792501560,
+      "action": "buy",
+      "amount_bnb_wei": 1991391799383402,
+      "busd": 0.8737772695706755,
+      "receipt": "0xdef9ad2c7f9f09d26bf996c9cf9e5693f8d6d7986b3f6897f3365b0380a2f0d1",
+      "price_ref": 730.26,
+      "kind": "trade"
+    },
+    "0x317a2e617286804fd792e9acb1a0f005113b61cbc19e02b73791f3e0608b4f20": {
+      "tx": "0x317a2e617286804fd792e9acb1a0f005113b61cbc19e02b73791f3e0608b4f20",
+      "ts": 1792503431,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8740469767105791,
+      "receipt": "0x0f03c36a81bfe4679342fee0cf22dd35a2c8c856d87bb6e7450cb718824e9b15",
+      "price_ref": 731.47,
+      "kind": "trade"
+    },
+    "0xb6c194264f6ee29214ef61c2ab8bd7e0afec45afa83116e71c15dd9e33bac261": {
+      "tx": "0xb6c194264f6ee29214ef61c2ab8bd7e0afec45afa83116e71c15dd9e33bac261",
+      "ts": 1792504065,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8740463509583297,
+      "receipt": "0x24e5c9484aee8c0bacea4243e91314b3746539102783ac7728eaf90410f3702b",
+      "price_ref": 730.94,
+      "kind": "trade"
+    },
+    "0xea1ee5d4c698daec166e075e5768c192dac625ab66c45fa348267ed054cef237": {
+      "tx": "0xea1ee5d4c698daec166e075e5768c192dac625ab66c45fa348267ed054cef237",
+      "ts": 1792504367,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8737753934359663,
+      "receipt": "0xad1e1bd091b69c092126acdb91c834b0f08b18465b1d4d99441f9a7aff18188c",
+      "price_ref": 732.16,
+      "kind": "trade"
+    },
+    "0xdeb6440fd91d6417c1aee281971438d90e0185eb95b526c0e45dd9ed189c7ac3": {
+      "tx": "0xdeb6440fd91d6417c1aee281971438d90e0185eb95b526c0e45dd9ed189c7ac3",
+      "ts": 1792505000,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8735045619328055,
+      "receipt": "0xaef5c1d611f3eb71fd8c090f7e777236eedb4e1888ef262cc768b82d49c35820",
+      "price_ref": 735.15,
+      "kind": "trade"
+    },
+    "0x4c3740d26e52e824093b5533a339b4c56268b7337dc9e468abbaef9b8c2ab7da": {
+      "tx": "0x4c3740d26e52e824093b5533a339b4c56268b7337dc9e468abbaef9b8c2ab7da",
+      "ts": 1792503129,
+      "action": "buy",
+      "amount_bnb_wei": 1991391799794845,
+      "busd": 0.8737766441915179,
+      "receipt": "0x42318130084655740ea16732f746a53f7bcdcd9a7dffe35723350e43d83fce5d",
+      "price_ref": 730.51,
+      "kind": "trade"
+    },
+    "0x0f45ed468a85674f73a39fda29f38749b29665428b1ab1870de3f78939f92167": {
+      "tx": "0x0f45ed468a85674f73a39fda29f38749b29665428b1ab1870de3f78939f92167",
+      "ts": 1792503763,
+      "action": "buy",
+      "amount_bnb_wei": 1991391800206287,
+      "busd": 0.8737760188132817,
+      "receipt": "0x4c9f03586564b00930c547b2fe9fb5c59dd9d6d524add3f9eef9080cbfbf4abb",
+      "price_ref": 730.39,
+      "kind": "trade"
+    },
+    "0x2f46f593c7ba33e6fe9aeb6d6ccf0cb2c01091ff291edf87ecdc2a64af25277f": {
+      "tx": "0x2f46f593c7ba33e6fe9aeb6d6ccf0cb2c01091ff291edf87ecdc2a64af25277f",
+      "ts": 1792512550,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8732338563706995,
+      "receipt": "0xa6134426720f0f719a2e49e729ef95058534f512b40a6b8aeff817485806986d",
+      "price_ref": 734.73,
+      "kind": "trade"
+    },
+    "0xee66f169cfaabd92fdb213a9fd0740722816eae1c27c26915fb9545d38d4a295": {
+      "tx": "0xee66f169cfaabd92fdb213a9fd0740722816eae1c27c26915fb9545d38d4a295",
+      "ts": 1792514090,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8732332315308735,
+      "receipt": "0x397086933a12621b2a894938507e8280d06b13a628a2a0271828006627060045",
+      "price_ref": 736.05,
+      "kind": "trade"
+    },
+    "0x02be69c63d9dff1c0d635c0af1abbab80ad9777c686e1821b49c6a45f1fc5d1b": {
+      "tx": "0x02be69c63d9dff1c0d635c0af1abbab80ad9777c686e1821b49c6a45f1fc5d1b",
+      "ts": 1792513186,
+      "action": "buy",
+      "amount_bnb_wei": 1991392087262877,
+      "busd": 0.8729632766715613,
+      "receipt": "0x19fe4b78732ab5363992553b8372cd9f583490ec9d5092a98fd5a1bd770942eb",
+      "price_ref": 733.7,
+      "kind": "trade"
+    },
+    "0x4190f3d50474735371159d8868d7488303c8ec65619a04a19aa15dbf3c5ef55e": {
+      "tx": "0x4190f3d50474735371159d8868d7488303c8ec65619a04a19aa15dbf3c5ef55e",
+      "ts": 1792604257,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8729626522059535,
+      "receipt": "0x8eed0066abcf66bfaeac79b0a484488e218b2d1c8394613dd4c42fd7b6ed74df",
+      "price_ref": 750.81,
+      "kind": "trade"
+    },
+    "0x316c2e7d6f295e2a9bc839c6d1b12328518adc8c9c296366741e3534665f757d": {
+      "tx": "0x316c2e7d6f295e2a9bc839c6d1b12328518adc8c9c296366741e3534665f757d",
+      "ts": 1792625762,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8729620276704879,
+      "receipt": "0xcbe5940af6dd230442e2b6aaf881c377f631c4396a86159911a2b7904a284f40",
+      "price_ref": 747.5,
+      "kind": "trade"
+    },
+    "0xfe495c684f3dafc4cfc633c32aa481885382f18d50656e015b09ccf61182ba6d": {
+      "tx": "0xfe495c684f3dafc4cfc633c32aa481885382f18d50656e015b09ccf61182ba6d",
+      "ts": 1792626397,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8729614031359418,
+      "receipt": "0x87b1ade032f874af6a74133fd6a9cfcd9d8c87f9b04bd1bf07e0d83530b21756",
+      "price_ref": 746.98,
+      "kind": "trade"
+    },
+    "0x2541d01d33b153f410308b5e9647b03ef8128119a9ff580a118dc89e0303bb59": {
+      "tx": "0x2541d01d33b153f410308b5e9647b03ef8128119a9ff580a118dc89e0303bb59",
+      "ts": 1792627663,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8729607786023151,
+      "receipt": "0x3610d16c2b0c928e9512a1e2f21785982762e694af8e59dc63af7f59e3595f34",
+      "price_ref": 749.2,
+      "kind": "trade"
+    },
+    "0xda071d03895e3a7d2c5a6845ce2aae5f7cf0a7b2a7637230dc7a938b6a898ad7": {
+      "tx": "0xda071d03895e3a7d2c5a6845ce2aae5f7cf0a7b2a7637230dc7a938b6a898ad7",
+      "ts": 1792627664,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8726903261840144,
+      "receipt": "0x36ab9f07ec5659ed7c9bdd15f4693e3b64c53827884a81a951d25fc7396d442c",
+      "price_ref": 749.2,
+      "kind": "trade"
+    },
+    "0x0b14d7a217effef22ea477897c687ee6327d2e4641228ffdd81ef4e94d15eaeb": {
+      "tx": "0x0b14d7a217effef22ea477897c687ee6327d2e4641228ffdd81ef4e94d15eaeb",
+      "ts": 1792628330,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8726897019545495,
+      "receipt": "0xab7a8f8411e22ba04faef3fb16f278608b658eb9af5c8b270b41243908edbec7",
+      "price_ref": 748.85,
+      "kind": "trade"
+    },
+    "0xfecf412c60685bff673a7ac7530cffdfa349264114658c71f74a786cc662484d": {
+      "tx": "0xfecf412c60685bff673a7ac7530cffdfa349264114658c71f74a786cc662484d",
+      "ts": 1792625430,
+      "action": "buy",
+      "amount_bnb_wei": 1991392183162922,
+      "busd": 0.8726921986657168,
+      "receipt": "0x0fd19933fdbb62119d1c8a62d4c4a4529df3eb507a08cae2d3ddd4688ee70d79",
+      "price_ref": 747.25,
+      "kind": "trade"
+    },
+    "0x1e5b40b1d78fe6574a50f5ac70fdc3934f4722b7a8e036237a102d522ac56118": {
+      "tx": "0x1e5b40b1d78fe6574a50f5ac70fdc3934f4722b7a8e036237a102d522ac56118",
+      "ts": 1792626065,
+      "action": "buy",
+      "amount_bnb_wei": 1991392183573834,
+      "busd": 0.8726915745042306,
+      "receipt": "0x5cb22a360457dceb9448166fd0bca5bffb4b8af2deb21cd3f12650a0ebcb9761",
+      "price_ref": 746.96,
+      "kind": "trade"
+    },
+    "0xf8723b5c36f30f43b05357bff90b3495319086f047af52843d3385e4a0b9ee72": {
+      "tx": "0xf8723b5c36f30f43b05357bff90b3495319086f047af52843d3385e4a0b9ee72",
+      "ts": 1792626730,
+      "action": "buy",
+      "amount_bnb_wei": 1991392183984746,
+      "busd": 0.8726909503436633,
+      "receipt": "0xd77d5086c8014ca5122dce72c229fcd586703c70e34285785617585ec76f9563",
+      "price_ref": 746.36,
+      "kind": "trade"
+    },
+    "0x95701b43a92f1dc66d99dac3fafee4700816c6f4397e6890f4e80b4f040637ee": {
+      "tx": "0x95701b43a92f1dc66d99dac3fafee4700816c6f4397e6890f4e80b4f040637ee",
+      "ts": 1792627997,
+      "action": "buy",
+      "amount_bnb_wei": 1991392279854672,
+      "busd": 0.8724199994716579,
+      "receipt": "0x8adeb74259d70f6919590de642c1b5a113a4f3170421ce2c4f51724d2e9f3a39",
+      "price_ref": 748.56,
+      "kind": "trade"
+    },
+    "0x34cdc217011a22552bd63aa6985d5ac5feead2ec598834f5c76d1db35f481840": {
+      "tx": "0x34cdc217011a22552bd63aa6985d5ac5feead2ec598834f5c76d1db35f481840",
+      "ts": 1792631642,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8726890777260035,
+      "receipt": "0x4d2dde5bf54734939e5ee10f39cc545d7fc30a56eb692ac7419ed47ddb3aedc5",
+      "price_ref": 748.92,
+      "kind": "trade"
+    },
+    "0xc61e9272700af02f13e1b63034ad3bcda649483c5262bf459d59b2396b0d3736": {
+      "tx": "0xc61e9272700af02f13e1b63034ad3bcda649483c5262bf459d59b2396b0d3736",
+      "ts": 1792633513,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8732281486903525,
+      "receipt": "0x469d54bd47e3d9ea2e8e3ba5eeb9f6fad740d86fc4a044c59885c139f2bd45ea",
+      "price_ref": 746.36,
+      "kind": "trade"
+    },
+    "0x5330871e4b8ecf7e47fdd0a72ad4f0679edcff344b696cdae72d43a1fc93d143": {
+      "tx": "0x5330871e4b8ecf7e47fdd0a72ad4f0679edcff344b696cdae72d43a1fc93d143",
+      "ts": 1792631039,
+      "action": "buy",
+      "amount_bnb_wei": 1991392280265450,
+      "busd": 0.8724193756159324,
+      "receipt": "0x78e9f73a3183f3ff32944b699873b13576da83c96c7e66c2bd2c5c2bb2929f8e",
+      "price_ref": 748.13,
+      "kind": "trade"
+    },
+    "0xe1d65874305e45ddcda4bf410aee03ea96c80bca3288bbd10c3c2dca0e2857c8": {
+      "tx": "0xe1d65874305e45ddcda4bf410aee03ea96c80bca3288bbd10c3c2dca0e2857c8",
+      "ts": 1792632847,
+      "action": "buy",
+      "amount_bnb_wei": 1991392280676228,
+      "busd": 0.8724187517611247,
+      "receipt": "0xad90146ce2739cb0f6783f2b3a1845001a4eadf05ff4bfa05f1b4bd407411955",
+      "price_ref": 747.53,
+      "kind": "trade"
+    },
+    "0x9c5c073fe1782fc9d47c533e3b1f64dad35813b6d2fc748233bac4c642240022": {
+      "tx": "0x9c5c073fe1782fc9d47c533e3b1f64dad35813b6d2fc748233bac4c642240022",
+      "ts": 1792633180,
+      "action": "buy",
+      "amount_bnb_wei": 1991392185628372,
+      "busd": 0.8726884534983761,
+      "receipt": "0xde72c717d4c0c2efecf55d2ca1c923a2e485b259c9645e1777c75572456e4e67",
+      "price_ref": 746.54,
+      "kind": "trade"
+    },
+    "0xdaebeb8bce7a5b0a689cd166acd8fc9834c10bdfc9bfd572af1a731c662fb4f1": {
+      "tx": "0xdaebeb8bce7a5b0a689cd166acd8fc9834c10bdfc9bfd572af1a731c662fb4f1",
+      "ts": 1792633181,
+      "action": "buy",
+      "amount_bnb_wei": 1990776656869444,
+      "busd": 0.8726884534983761,
+      "receipt": "0xa4709291f2f4e03f669ccddfa695faf7736b7cf9810316a9648fc29ccc37ade8",
+      "price_ref": 746.54,
+      "kind": "trade"
+    },
+    "0x63926928232b1bc28a4fbd94fbe6e3f1752d2432f075a40dd4a51e0ab5a66fac": {
+      "tx": "0x63926928232b1bc28a4fbd94fbe6e3f1752d2432f075a40dd4a51e0ab5a66fac",
+      "ts": 1792635084,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8734976005031236,
+      "receipt": "0x8172422aa0ae3038921776f29ba00719e5de0b1892ed87258db40ca60a20c3d6",
+      "price_ref": 744.91,
+      "kind": "trade"
+    },
+    "0xbda42c7d062911af911102a55c4224a582a86bf1ec3ba61b1f9cbc08bc46a49e": {
+      "tx": "0xbda42c7d062911af911102a55c4224a582a86bf1ec3ba61b1f9cbc08bc46a49e",
+      "ts": 1792634117,
+      "action": "buy",
+      "amount_bnb_wei": 1991392090991599,
+      "busd": 0.8729575723981184,
+      "receipt": "0xd5349c2b2c39b9a51cbe8d3a5f5921a2cb4821062b303197ed25555c572b8635",
+      "price_ref": 745.21,
+      "kind": "trade"
+    },
+    "0x0369822d685a6aaec247dacdf665d8701ef21f33df2bd69f3e89195a09322c32": {
+      "tx": "0x0369822d685a6aaec247dacdf665d8701ef21f33df2bd69f3e89195a09322c32",
+      "ts": 1792634751,
+      "action": "buy",
+      "amount_bnb_wei": 1991391995885176,
+      "busd": 0.8732275238589008,
+      "receipt": "0x041e99d7d0c0172db477409c667de49048be0f052e4b67a472c3fb40f058a33b",
+      "price_ref": 744.15,
+      "kind": "trade"
+    },
+    "0xf51177f3c5f814d52775f61d21786e983016714b6430756d41800324f69087aa": {
+      "tx": "0xf51177f3c5f814d52775f61d21786e983016714b6430756d41800324f69087aa",
+      "ts": 1792703976,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.871875278003133,
+      "receipt": "0xe1e9fb52e9146eb24b6e23713908625182f2c9d8f0464ff878d9715887d76fd8",
+      "price_ref": 732.77,
+      "kind": "trade"
+    },
+    "0x0396c321df2542c355b555a3475fd828825e323e3e5a54eef2b35f7b67ca3ddf": {
+      "tx": "0x0396c321df2542c355b555a3475fd828825e323e3e5a54eef2b35f7b67ca3ddf",
+      "ts": 1792709121,
+      "action": "buy",
+      "amount_bnb_wei": 1991392568956374,
+      "busd": 0.8716053305907964,
+      "receipt": "0x4b4e605228ea637e48d306516fefd07bf9fe58de89614d184493db67b9223a3e",
+      "price_ref": 731.49,
+      "kind": "trade"
+    },
+    "0x8b7fa41b2084f219656d864a700669e56a14ede27c09e8c4b776e7cd0773323c": {
+      "tx": "0x8b7fa41b2084f219656d864a700669e56a14ede27c09e8c4b776e7cd0773323c",
+      "ts": 1792716338,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.871874654688731,
+      "receipt": "0xa38a6cb7c71d50f318c934a680d83e06cea2123774bcf243a155d098c0c85c8e",
+      "price_ref": 731.77,
+      "kind": "trade"
+    },
+    "0x15ca921393cb47e9e14c69150c12ad4595c7c5721f2e60be8406ded4b7f40143": {
+      "tx": "0x15ca921393cb47e9e14c69150c12ad4595c7c5721f2e60be8406ded4b7f40143",
+      "ts": 1792718506,
+      "action": "sell",
+      "amount_bnb_wei": 2000000000000000,
+      "busd": 0.8718740313752458,
+      "receipt": "0x53b542e017d5b0a7e8eed47d8359434d7f557cc1038e1fd886ca04b5792da05a",
+      "price_ref": 731.95,
+      "kind": "trade"
+    },
+    "0xcba0d555042dd8174f08d7a74c76dc55a0eb7d0d850fe2b43f7ca2688a5176fa": {
+      "tx": "0xcba0d555042dd8174f08d7a74c76dc55a0eb7d0d850fe2b43f7ca2688a5176fa",
+      "ts": 1792717573,
+      "action": "buy",
+      "amount_bnb_wei": 1991392569366753,
+      "busd": 0.8716047076494158,
+      "receipt": "0x8fdecb52116cc6894994d5b96b58588f844773d70681c4217b373e88d4241016",
+      "price_ref": 730.81,
+      "kind": "trade"
+    }
+  },
+  "earnings": {
+    "0xb4fcaf987b645b4d881c7104e63f269655a95fc34da46996e4a23d988bf148ec": {
+      "tx": "0xb4fcaf987b645b4d881c7104e63f269655a95fc34da46996e4a23d988bf148ec",
+      "amount_u": 0.1,
+      "ts": 1792217958
+    },
+    "0x0fe0e61f301dd8e9baba7a9ac5a173da628e0ac3099cb6713fcdfb89c7f7e6e4": {
+      "tx": "0x0fe0e61f301dd8e9baba7a9ac5a173da628e0ac3099cb6713fcdfb89c7f7e6e4",
+      "amount_u": 0.1,
+      "ts": 1792218274
+    },
+    "0xc324f4c52b344a1f5a07a2d61fc0e82e7b13ed6b63abc66dccf74f0268f6c779": {
+      "tx": "0xc324f4c52b344a1f5a07a2d61fc0e82e7b13ed6b63abc66dccf74f0268f6c779",
+      "amount_u": 0.1,
+      "ts": 1792218275
+    },
+    "0x03f605313abc640c1654887534e655aaa267d6a12d5bd1ed317c7b0e2e566faf": {
+      "tx": "0x03f605313abc640c1654887534e655aaa267d6a12d5bd1ed317c7b0e2e566faf",
+      "amount_u": 0.1,
+      "ts": 1792375159
+    },
+    "0xbb0334b1f90d22a557560a4c72bb48d56c103d4cd43bfe1af73edc173dbe45a2": {
+      "tx": "0xbb0334b1f90d22a557560a4c72bb48d56c103d4cd43bfe1af73edc173dbe45a2",
+      "amount_u": 0.1,
+      "ts": 1792378996
+    },
+    "0x99164b17d6be8a30d06f5077bd2dd79a3b9b20a4c53ebc185851f208031cbf6a": {
+      "tx": "0x99164b17d6be8a30d06f5077bd2dd79a3b9b20a4c53ebc185851f208031cbf6a",
+      "amount_u": 0.1,
+      "ts": 1792379406
+    },
+    "0x233ea832460a5d93af12f3aaab0d865910f29cf7c65657b2fb203ad204bd6df4": {
+      "tx": "0x233ea832460a5d93af12f3aaab0d865910f29cf7c65657b2fb203ad204bd6df4",
+      "amount_u": 0.1,
+      "ts": 1792429808
+    },
+    "0x9695f3309458ba81085d85250d6eeb0e11567b33e2ddc385d29347f9d5c983c3": {
+      "tx": "0x9695f3309458ba81085d85250d6eeb0e11567b33e2ddc385d29347f9d5c983c3",
+      "amount_u": 0.1,
+      "ts": 1792434359
+    },
+    "0xa6987c66d15e1c3040375c2188309294bc0850587ea81aec392eb85547cf129f": {
+      "tx": "0xa6987c66d15e1c3040375c2188309294bc0850587ea81aec392eb85547cf129f",
+      "amount_u": 0.1,
+      "ts": 1792446080
+    },
+    "0x6b2dfe6be90d017b21873671eabd5fef4ab53f333c10f9620966670c0c41384d": {
+      "tx": "0x6b2dfe6be90d017b21873671eabd5fef4ab53f333c10f9620966670c0c41384d",
+      "amount_u": 0.1,
+      "ts": 1792465159
+    },
+    "0x10c43798c6aec922832fdbbcee5f4afbdb8bc53424b56bae62b2d57d0b2583e6": {
+      "tx": "0x10c43798c6aec922832fdbbcee5f4afbdb8bc53424b56bae62b2d57d0b2583e6",
+      "amount_u": 0.4,
+      "ts": 1792521446
+    },
+    "0xad2287ed9dae396f265a5c6c6a330ff21e59caabcbed4ba01509a4bdb18bd68d": {
+      "tx": "0xad2287ed9dae396f265a5c6c6a330ff21e59caabcbed4ba01509a4bdb18bd68d",
+      "amount_u": 1.0,
+      "ts": 1792547309
+    },
+    "0x32aea956e113443c8b25e5d7fcb4c542275e5a6181abf05426e28f281a2bb7b6": {
+      "tx": "0x32aea956e113443c8b25e5d7fcb4c542275e5a6181abf05426e28f281a2bb7b6",
+      "amount_u": 0.1,
+      "ts": 1792550689
+    }
+  }
+}
